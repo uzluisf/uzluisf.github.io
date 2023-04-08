@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Luis Uceta">
+<meta name="description" content="NodeJS handles raw binary data with the classes Buffer and Blob, while Raku does so with the roles Buf and Blob, which are mutable and immutable buffers respectively. In Raku, a Buf composes a Blob so all Blob methods are available to Buf objects.
+The following table summarizes the similarities and differences between buffer constructs in NodeJS and Raku:
+NodeJS Raku Buffer/Buf Fixed-length sequence of bytes (No methods such as push, pop, etc.">
+
+<meta property="og:title" content="NodeJS to Raku - Buffers" />
+<meta property="og:description" content="NodeJS handles raw binary data with the classes Buffer and Blob, while Raku does so with the roles Buf and Blob, which are mutable and immutable buffers respectively. In Raku, a Buf composes a Blob so all Blob methods are available to Buf objects.
+The following table summarizes the similarities and differences between buffer constructs in NodeJS and Raku:
+NodeJS Raku Buffer/Buf Fixed-length sequence of bytes (No methods such as push, pop, etc." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://uzluisf.github.io/blog/buffers-nodejs-raku/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2023-03-15T17:09:14-05:00" />
+<meta property="article:modified_time" content="2023-03-15T17:09:14-05:00" />
+
+
+<title>
+
+
+     NodeJS to Raku - Buffers 
+
+</title>
+<link rel="canonical" href="https://uzluisf.github.io/blog/buffers-nodejs-raku/">
+
+
+
+
+
+
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+  
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/reset.css?t=2023-04-08%2023%3a02%3a29.961653838%20%2b0000%20UTC%20m%3d%2b0.118461869">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/pygments.css?t=2023-04-08%2023%3a02%3a29.961653838%20%2b0000%20UTC%20m%3d%2b0.118461869">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/main.css?t=2023-04-08%2023%3a02%3a29.961653838%20%2b0000%20UTC%20m%3d%2b0.118461869">
+    
+        <link rel="stylesheet" href="https://uzluisf.github.io/css/override.css?t=2023-04-08%2023%3a02%3a29.961653838%20%2b0000%20UTC%20m%3d%2b0.118461869">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://uzluisf.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                
+                <a href="https://uzluisf.github.io/"><img class="avatar" src="https://uzluisf.github.io/img/profile.png" alt="avatar" srcset="https://uzluisf.github.io/img/profile.png 1x,https://uzluisf.github.io/img/profile-2x.png 2x,https://uzluisf.github.io/img/profile-3x.png 3x,https://uzluisf.github.io/img/profile-4x.png 4x"></a>
+            
+            <a href="https://uzluisf.github.io/"><div class="name">Luis Uceta</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        
+                        <li class="nav-blog"><a href="https://uzluisf.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        
+                        <li class="nav-about"><a href="https://uzluisf.github.io/about/"><span>About</span></a></li>
+                    
+                        
+                        <li class="nav-code"><a href="https://uzluisf.github.io/code/"><span>Code</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/you" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/you" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+
+        
+
+        
+            <a href="//example.com/@you" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/mastodon.svg" alt="mastodon" /></a>
+        
+
+        
+            <a href="//linkedin.com/in/you" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/linkedin.svg" alt="linkedin" /></a>
+        
+
+        
+
+        
+            <a href="//t.me/you" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/telegram.svg" alt="telegram" /></a>
+        
+
+        
+            <a href="//instagram.com/you" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/instagram.svg" alt="instagram" /></a>
+        
+
+        
+            <a href="//500px.com/username" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/500px.svg" alt="500px" /></a>
+        
+
+        
+
+        
+            <a href="mailto:you@example.space"><img class="icon" src="https://uzluisf.github.io/img/email.svg" alt="email" /></a>
+        
+
+        
+        
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    NodeJS to Raku - Buffers
+
+</div>
+
+                    <div class="initials"><a href="https://uzluisf.github.io/">ad</a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Wed Mar 15 2023 17:09:14 -0500'>Mar 15, 2023</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>8 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p>NodeJS handles raw binary data with the classes <code>Buffer</code> and <code>Blob</code>, while Raku does so with the roles <code>Buf</code> and <code>Blob</code>, which are mutable and immutable buffers respectively. In Raku, a <code>Buf</code> composes a <code>Blob</code> so all <code>Blob</code> methods are available to <code>Buf</code> objects.</p>
+<p>The following table summarizes the similarities and differences between buffer constructs in NodeJS and Raku:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left">NodeJS</th>
+<th style="text-align:left">Raku</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>Buffer</code>/<code>Buf</code></td>
+<td style="text-align:left">Fixed-length sequence of bytes (No methods such as <code>push</code>, <code>pop</code>, etc.)</td>
+<td style="text-align:left">Sequence of bytes that can grow or shrink dynamically. You can use methods such as <code>push</code>, <code>pop</code>, etc.</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">Iterable using the <code>for..of</code> syntax</td>
+<td style="text-align:left">It cannot be iterated over using a looping construct. Use the method <code>list</code> to get hold of an iterator.</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">Each byte can be updated using array indexing, e.g., <code>buf[i]++</code>.</td>
+<td style="text-align:left">Same as NodeJS.</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Blob</code></td>
+<td style="text-align:left">Fixed-length sequence of bytes (No methods such as <code>push</code>, <code>pop</code>, etc.)</td>
+<td style="text-align:left">Same as NodeJS.</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">It&rsquo;s not iterable.</td>
+<td style="text-align:left">Same as NodeJS.</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">Each byte is immutable.</td>
+<td style="text-align:left">Same as NodeJS.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="creating-buffers">Creating buffers</h2>
+<p>In NodeJS, there are a few ways to create a new buffer. You can use the static method <code>Buffer.alloc</code> to allocate a buffer of <code>n</code> bytes of zero, unless the <code>fill</code> argument is provided.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">zeroBuf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">charBuf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">zeroBuf</span><span class="p">);</span> <span class="c1">// OUTPUT: «&lt;Buffer 00 00 00 00 00 00 00 00&gt;␤»
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">charBuf</span><span class="p">);</span> <span class="c1">// OUTPUT: «&lt;Buffer 61 61 61 61 61 61 61 61&gt;␤»
+</span></span></span></code></pre></div><p>In Raku, you can use the <code>allocate</code> method on the <code>Blob</code> role:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$zero-blob</span> <span class="o">=</span> <span class="nb">Blob</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$char-blob</span> <span class="o">=</span> <span class="nb">Blob</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">8</span><span class="o">,</span> <span class="mi">97</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$zero-blob</span><span class="p">;</span> <span class="c1"># OUTPUT: «Blob:0x&lt;00 00 00 00 00 00 00 00&gt;␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$char-blob</span><span class="p">;</span> <span class="c1"># OUTPUT: «Blob:0x&lt;61 61 61 61 61 61 61 61&gt;␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$zero-buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$char-buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">8</span><span class="o">,</span> <span class="mi">97</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$zero-buf</span><span class="p">;</span> <span class="c1"># OUTPUT: «Buf:0x&lt;00 00 00 00 00 00 00 00&gt;␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$char-buf</span><span class="p">;</span> <span class="c1"># OUTPUT: «Buf:0x&lt;61 61 61 61 61 61 61 61&gt;␤»</span>
+</span></span></code></pre></div><p>You can also initialize a buffer to the contents of an array of integers:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">([</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">117</span> <span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">);</span> <span class="c1">// OUTPUT: «&lt;Buffer 72 61 6b 75&gt;␤»
+</span></span></span></code></pre></div><p>In Raku, you can do the same by using the <code>new</code> constructor:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$blob</span> <span class="o">=</span> <span class="nb">Blob</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="mi">114</span><span class="o">,</span> <span class="mi">97</span><span class="o">,</span> <span class="mi">107</span><span class="o">,</span> <span class="mi">117</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$blob</span><span class="p">;</span> <span class="c1"># OUTPUT: «Blob:0x&lt;72 61 6B 75&gt;␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="mi">114</span><span class="o">,</span> <span class="mi">97</span><span class="o">,</span> <span class="mi">107</span><span class="o">,</span> <span class="mi">117</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span><span class="p">;</span> <span class="c1"># OUTPUT: «Buf:0x&lt;72 61 6B 75&gt;␤»</span>
+</span></span></code></pre></div><p>Similarly, you can initialize a buffer to the binary encoding of a string using the <code>from</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="s1">&#39;NodeJS &amp; Raku&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">);</span> <span class="c1">// OUTPUT: «&lt;Buffer 4e 6f 64 65 4a 53 20 26 20 52 61 6b 75&gt;␤»
+</span></span></span></code></pre></div><p>In Raku, you call the <code>encode</code> method on a string which returns a <code>Blob</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$blob</span> <span class="o">=</span> <span class="p">&#34;</span><span class="s2">NodeJS &amp; Raku</span><span class="p">&#34;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$blob</span><span class="p">;</span> <span class="c1"># OUTPUT: «utf8:0x&lt;4E 6F 64 65 4A 53 20 26 20 52 61 6B 75&gt;␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$buf</span> <span class="o">=</span> <span class="p">&#34;</span><span class="s2">NodeJS &amp; Raku</span><span class="p">&#34;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">ISO-8859-1</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span><span class="p">;</span> <span class="c1"># OUTPUT: «Blob[uint8]:0x&lt;4E 6F 64 65 4A 53 20 26 20 52 61 6B 75&gt;␤»</span>
+</span></span></code></pre></div><p><strong>Note:</strong> In Raku, you must encode a character explicitly when passing its blob to a buffer-related method.</p>
+<p>To decode a binary encoding of a string, you call the <code>toString()</code> method on the buffer:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">([</span> <span class="mi">114</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">117</span> <span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">));</span> <span class="c1">// OUTPUT: «raku␤»
+</span></span></span></code></pre></div><p>In Raku, you call the <code>decode</code> method on the buffer:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$blob</span> <span class="o">=</span> <span class="nb">Blob</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="mi">114</span><span class="o">,</span> <span class="mi">97</span><span class="o">,</span> <span class="mi">107</span><span class="o">,</span> <span class="mi">117</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$blob</span><span class="o">.</span><span class="nb">decode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span> <span class="c1"># OUTPUT: «raku␤»</span>
+</span></span></code></pre></div><h2 id="writing-to-a-buffer">Writing to a buffer</h2>
+<p>In NodeJS, you write to a buffer using the <code>write</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">buf</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">);</span> <span class="c1">// OUTPUT: «&lt;Buffer 48 65 6c 6c 6f 00 00 00 00 00 00 00 00 00 00 00&gt;␤»
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">buf</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39; world!&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">);</span> <span class="c1">// OUTPUT: «&lt;Buffer 48 65 6c 6c 6f 20 77 6f 72 6c 64 21 00 00 00 00&gt;␤»
+</span></span></span></code></pre></div><p>In Raku, there&rsquo;s not a <code>write</code> method. However you can use the <code>splice</code> method to overwrite elements of a buffer with other elements:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$buf</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">Hello</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;));</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span><span class="p">;</span> <span class="c1"># OUTPUT: «Buf:0x&lt;48 65 6C 6C 6F 00 00 00 00 00 00 00 00 00 00 00&gt;␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$buf</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">7</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1"> world!</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;));</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span><span class="p">;</span> <span class="c1"># OUTPUT: «Buf:0x&lt;48 65 6C 6C 6F 20 77 6F 72 6C 64 21 00 00 00 00&gt;␤»</span>
+</span></span></code></pre></div><p>Both in NodeJS and in Raku, you can change individual bytes of <code>Buffer</code> and <code>Buf</code> objects respectively.</p>
+<h2 id="reading-from-a-buffer">Reading from a buffer</h2>
+<p>There are many ways to access data in a buffer, from accessing individual bytes to extracting the entire content to decoding its contents.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// OUTPUT: «72␤»
+</span></span></span></code></pre></div><p>In Raku, you can also index bytes from a buffer:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$blob</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">Hello</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$blob</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span> <span class="c1"># OUTPUT: «72␤»</span>
+</span></span></code></pre></div><p>In NodeJS the most common way to retrieve all data from a buffer is with the <code>toString</code> method (assuming the buffer is encoded as text):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">buf</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">));</span> <span class="c1">// OUTPUT: «Hello world!\u0000t␤»
+</span></span></span></code></pre></div><p>We can provide an offset and a length to <code>toString</code> to only read the relevant bytes from the buffer:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">));</span> <span class="c1">// OUTPUT: «Hello world!␤»
+</span></span></span></code></pre></div><p>In Raku, you can do the same using the <code>decode</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$buf</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">12</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">Hello world</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;));;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span><span class="o">.</span><span class="nb">decode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;)</span><span class="o">.</span><span class="nb">raku</span><span class="p">;</span> <span class="c1"># OUTPUT: «Hello world!\0\0\0\0&gt;␤»</span>
+</span></span></code></pre></div><p>However, you cannot both slice and decode a buffer with <code>decode</code>. Instead you can use <code>subbuf</code> to extract the relevant part from the invocant buffer and then <code>decode</code> the returned buffer:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span><span class="o">.</span><span class="nb">subbuf</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="nb">decode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;)</span><span class="o">.</span><span class="nb">raku</span><span class="p">;</span> <span class="c1"># OUTPUT: «Hello world!&gt;␤»</span>
+</span></span></code></pre></div><p>Another way to retrieve the data stored in a buffer in NodeJS is with the <code>toJSON</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">buf</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Hello world&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// OUTPUT: {
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  type: &#39;Buffer&#39;,
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  data: [
+</span></span></span><span class="line"><span class="cl"><span class="c1">//     72, 101, 108, 108, 111, 32,
+</span></span></span><span class="line"><span class="cl"><span class="c1">//    119, 111, 114, 108, 100,  0,
+</span></span></span><span class="line"><span class="cl"><span class="c1">//      0,   0,   0,   0
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  ]
+</span></span></span><span class="line"><span class="cl"><span class="c1">// }
+</span></span></span></code></pre></div><p>Raku doesn&rsquo;t have a <code>toJSON</code> method, however it&rsquo;s relatively simply to write a function that returns a similar JSON object:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">sub</span> <span class="nf">toJSON</span><span class="p">(</span><span class="nb">Blob:D</span> <span class="nv">$buf</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s">type</span> <span class="o">=&gt;</span> <span class="nv">$buf</span><span class="o">.^</span><span class="nb">name</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s">data</span> <span class="o">=&gt;</span> <span class="nv">$buf</span><span class="o">.</span><span class="nb">list</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$buf</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">12</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">Hello world!</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;));</span>
+</span></span><span class="line"><span class="cl"><span class="nf">toJSON</span><span class="p">(</span><span class="nv">$buf</span><span class="p">)</span><span class="o">.</span><span class="nb">say</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># OUTPUT: {data =&gt; (72 101 108 108 111 32 119 111 114 108 100 33 0 0 0 0), type =&gt; Buf}</span>
+</span></span></code></pre></div><h2 id="more-useful-methods">More useful methods</h2>
+<h3 id="bufferisbuffer">Buffer.isBuffer</h3>
+<p>In NodeJS, you can check if an object is a buffer using the <code>isBuffer</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="s1">&#39;hello&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">isBuffer</span><span class="p">(</span><span class="nx">buf</span><span class="p">));</span> <span class="c1">// OUTPUT: «true␤»
+</span></span></span></code></pre></div><p>In Raku, you can smartmatch against either <code>Blob</code> or <code>Buf</code> (remember that <code>Buf</code> composes <code>Blob</code>):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$blob</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">hello</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$blob</span> <span class="o">~~</span> <span class="nb">Blob</span><span class="p">;</span> <span class="c1"># OUTPUT: «True␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$blob</span> <span class="o">~~</span> <span class="nb">Buf</span><span class="p">;</span>  <span class="c1"># OUTPUT: «False␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span> <span class="o">~~</span> <span class="nb">Buf</span><span class="p">;</span>   <span class="c1"># OUTPUT: «True␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span> <span class="o">~~</span> <span class="nb">Blob</span><span class="p">;</span>  <span class="c1"># OUTPUT: «True␤»</span>
+</span></span></code></pre></div><h3 id="bufferbytelength">Buffer.byteLength</h3>
+<p>To check the number of bytes required to encode a string, you can use <code>Buffer.byteLength</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">camelia</span> <span class="o">=</span> <span class="s1">&#39;🦋&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">byteLength</span><span class="p">(</span><span class="nx">camelia</span><span class="p">));</span> <span class="c1">// OUTPUT: «4␤»
+</span></span></span></code></pre></div><p>In Raku, you can use the <code>bytes</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$camelia</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">🦋</span><span class="p">&#39;;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$camelia</span><span class="o">.</span><span class="nb">encode</span><span class="o">.</span><span class="nb">bytes</span><span class="p">;</span> <span class="c1"># OUTPUT: «4␤»</span>
+</span></span></code></pre></div><p>NOTE: The number of bytes isn&rsquo;t the same as the string&rsquo;s length. This is because many characters require more bytes to be encoded than what their lengths let on.</p>
+<h3 id="length">length</h3>
+<p>In NodeJS, you use the <code>length</code> method to determine how much memory is allocated by a buffer. This is not the same as the size of the buffer&rsquo;s contents.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">buf</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">buf</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;🦋&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span> <span class="c1">// OUTPUT: «16␤»
+</span></span></span></code></pre></div><p>In Raku, you can use the <code>elems</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$buf</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$buf</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">🦋</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">🦋</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;));</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$buf</span><span class="o">.</span><span class="nb">elems</span><span class="p">;</span> <span class="c1"># OUTPUT: «16␤»</span>
+</span></span></code></pre></div><h3 id="copy">copy</h3>
+<p>You use the <code>copy</code> method to copy the contents of one buffer onto another.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">source</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="s1">&#39;🦋&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">target</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Happy birthday! &#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">source</span><span class="p">.</span><span class="nx">copy</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">target</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">));</span> <span class="c1">// OUTPUT: «Happy birthday! 🦋␤»
+</span></span></span></code></pre></div><p>There&rsquo;s no <code>copy</code> method in Raku, however you can use the <code>splice</code> method for the same result:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$target</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$encoded-string</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">Happy birthday! </span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$target</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nv">$encoded-string</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="nv">$encoded-string</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$source</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">🦋</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$target</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">16</span><span class="o">,</span> <span class="nv">$source</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="nv">$source</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$target</span><span class="o">.</span><span class="nb">subbuf</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="nb">decode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span> <span class="c1"># OUTPUT: «Happy birthday! 🦋␤»</span>
+</span></span></code></pre></div><h3 id="slice">slice</h3>
+<p>You can slice a subset of a buffer using the <code>slice</code> method, which returns a reference to the subset of the memory space. Thus modifying the slice will also modify the original buffer.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="c1">// setup
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">alloc</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">source</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="s1">&#39;🦋&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">target</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;Happy birthday! &#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">source</span><span class="p">.</span><span class="nx">copy</span><span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// slicing off buffer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">animal</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">animal</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="s1">&#39;🐪&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">animal</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">);</span> <span class="c1">// OUTPUT: «🐪␤»
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">target</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">));</span> <span class="c1">// OUTPUT: «Happy birthday! 🐪␤»
+</span></span></span></code></pre></div><p>Here we sliced off <code>target</code> and stored the resulting buffer in <code>animal</code>, which we ultimately modified. This resulted on <code>target</code> being modified.</p>
+<p>In Raku, you can use the <code>subbuf</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># setup</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$target</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$encoded-string</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">Happy birthday! </span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$target</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nv">$encoded-string</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="nv">$encoded-string</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$source</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">🦋</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$target</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">16</span><span class="o">,</span> <span class="nv">$source</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="nv">$source</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># slicing off buffer</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$animal</span> <span class="o">=</span> <span class="nv">$target</span><span class="o">.</span><span class="nb">subbuf</span><span class="p">(</span><span class="mi">16</span><span class="o">,</span> <span class="mi">20</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$animal</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nv">$animal</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">🐪</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;));</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$animal</span><span class="o">.</span><span class="nb">decode</span><span class="p">;</span> <span class="c1"># OUTPUT: «🐪␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$target</span><span class="o">.</span><span class="nb">subbuf</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="nb">decode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span> <span class="c1"># OUTPUT: «Happy birthday! 🦋␤»</span>
+</span></span></code></pre></div><p>However, unlike NodeJS&rsquo;s <code>slice</code> method, <code>subbuf</code> returns a brand new buffer. To get a hold of a writable reference to a subset of a buffer, use <code>subbuf-rw</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># setup</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$target</span> <span class="o">=</span> <span class="nb">Buf</span><span class="o">.</span><span class="nb">allocate</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$encoded-string</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">Happy birthday! </span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$target</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="nv">$encoded-string</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="nv">$encoded-string</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$source</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">🦋</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$target</span><span class="o">.</span><span class="nb">splice</span><span class="p">(</span><span class="mi">16</span><span class="o">,</span> <span class="nv">$source</span><span class="o">.</span><span class="nb">bytes</span><span class="o">,</span> <span class="nv">$source</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># slicing off buffer</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$target</span><span class="o">.</span><span class="nb">subbuf-rw</span><span class="p">(</span><span class="mi">16</span><span class="o">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">🐪</span><span class="p">&#39;</span><span class="o">.</span><span class="nb">encode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$target</span><span class="o">.</span><span class="nb">subbuf</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="nb">decode</span><span class="p">(&#39;</span><span class="s1">utf-8</span><span class="p">&#39;);</span> <span class="c1"># OUTPUT: «Happy birthday! 🐪␤»</span>
+</span></span></code></pre></div>
+                <br>
+                
+                <p class="back-to-posts"><a href="https://uzluisf.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                <div id="disqus_thread"></div>
+<script type="application/javascript">
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "cocoaexamplesite" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-123-45', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    
+  
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+
