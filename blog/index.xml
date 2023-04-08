@@ -8,15 +8,6 @@
     <language>en-US</language>
     <lastBuildDate>Sat, 22 Aug 2015 06:42:21 -0700</lastBuildDate><atom:link href="https://uzluisf.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>New-Post</title>
-      <link>https://uzluisf.github.io/blog/new-post/</link>
-      <pubDate>Sat, 08 Apr 2023 19:23:33 -0400</pubDate>
-      
-      <guid>https://uzluisf.github.io/blog/new-post/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Deploy hugo site with Github Actions</title>
       <link>https://uzluisf.github.io/blog/deploy-hugo-site-with-github-actions/</link>
       <pubDate>Sat, 08 Apr 2023 19:15:39 -0400</pubDate>
@@ -39,36 +30,73 @@ NodeJS Raku Buffer/Buf Fixed-length sequence of bytes (No methods such as push, 
     </item>
     
     <item>
-      <title>Les Misérables by Victor Hugo</title>
-      <link>https://uzluisf.github.io/blog/les-mis%C3%A9rables-by-victor-hugo/</link>
-      <pubDate>Mon, 21 Dec 2015 04:05:25 -0600</pubDate>
+      <title>Containers in Raku</title>
+      <link>https://uzluisf.github.io/blog/containers-in-raku/</link>
+      <pubDate>Fri, 03 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://uzluisf.github.io/blog/les-mis%C3%A9rables-by-victor-hugo/</guid>
-      <description>Although this detail has no connection whatever with the real substance of what we are about to relate, it will not be superfluous, if merely for the sake of exactness in all points, to mention here the various rumors and remarks which had been in circulation about him from the very moment when he arrived in the diocese.
-Bool True or false, that which is said of men often occupies as important a place in their lives, and above all in their destinies, as that which they do.</description>
+      <guid>https://uzluisf.github.io/blog/containers-in-raku/</guid>
+      <description>In programming languages, a variable is a way of associating a particular value with a name known to the compiler. For instance, take the variable declaration with its assignment, my $x = &amp;quot;Hello&amp;quot;. This associates the value 42 with the name $x and while this is true for most intents and purposes, this isn&amp;rsquo;t the entire story in Raku.
+In Raku, when the compiler encounters the variable declaration my $x, the compiler registers it in some internal symbol table.</description>
     </item>
     
     <item>
-      <title>Metamorphosis by Franz Kafka</title>
-      <link>https://uzluisf.github.io/blog/metamorphosis-by-franz-kafka/</link>
-      <pubDate>Mon, 21 Dec 2015 04:03:46 -0600</pubDate>
+      <title>With a new name</title>
+      <link>https://uzluisf.github.io/blog/with-a-new-name/</link>
+      <pubDate>Thu, 23 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://uzluisf.github.io/blog/metamorphosis-by-franz-kafka/</guid>
-      <description>Part One One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.
-He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.
-The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.</description>
+      <guid>https://uzluisf.github.io/blog/with-a-new-name/</guid>
+      <description>Back on October 2019, the programming language formerly known as Perl 6 was officially renamed to Raku. With the rename many things needed to be updated to match the language&amp;rsquo;s shiny new name (e.g., executables, extensions, documentation, etc.) and this included the Spanish translation of Laurent Rosenfeld&amp;rsquo;s Think Raku, an introduction to Computer Science and programming using Raku.
+The Spanish translation is titled Piensa en Raku and can be found at https://uzluisf.</description>
     </item>
     
     <item>
-      <title>Use @ instead of HEAD</title>
-      <link>https://uzluisf.github.io/blog/use-at-instead-of-head/</link>
-      <pubDate>Tue, 25 Aug 2015 17:09:14 -0500</pubDate>
+      <title>Instance Attributes in Raku</title>
+      <link>https://uzluisf.github.io/blog/instance-attributes-in-raku/</link>
+      <pubDate>Thu, 30 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://uzluisf.github.io/blog/use-at-instead-of-head/</guid>
-      <description>I recently discovered that from git version 1.8.5 onwards, @ can replace HEAD:
-$ git reset --hard @~2 $ git rebase -i @~10 $ git diff @~2..@~3 And also in most scenarios HEAD can be left out completely, so you can say:
-$ git reset -- @{2} instead of:
-$ git reset -- HEAD@{2} It takes some getting used to, but it&amp;rsquo;s definitely faster than typing HEAD.</description>
+      <guid>https://uzluisf.github.io/blog/instance-attributes-in-raku/</guid>
+      <description>In Raku, an object&amp;rsquo;s methods are fully accessible by default but its data (as attributes) cannot be accessed directly outside the class unless explicitly specified. In order to access the data from outside for reading, writing or both, you must make it public somehow. What level of access you allow to an object&amp;rsquo;s data will mostly depend on the way you declare its attributes.
+The $! twigil Let&amp;rsquo;s start with a simple example of a Raku class definition:</description>
+    </item>
+    
+    <item>
+      <title>Syncing Your Tasks with fruux and Tasks</title>
+      <link>https://uzluisf.github.io/blog/syncing-your-tasks-with-fruux-and-tasks/</link>
+      <pubDate>Sat, 30 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://uzluisf.github.io/blog/syncing-your-tasks-with-fruux-and-tasks/</guid>
+      <description>Recently I came across Tasks, an Android app that lets you manage tasks (ta-da!). While I&amp;rsquo;ve been using the app to write down simple tasks, I&amp;rsquo;ve always wished that the tasks could be synced. Thus I was quite surprised when I learned that the app is compatible with CalDAV servers and thus allows you to sync your tasks with any service that uses CalDav, an open standard that provides client access to schedule information on a remote server.</description>
+    </item>
+    
+    <item>
+      <title>A Naive Introduction to Object Orientation in Perl 6</title>
+      <link>https://uzluisf.github.io/blog/a-naive-introduction-to-object-orientation-in-perl-6/</link>
+      <pubDate>Sun, 26 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://uzluisf.github.io/blog/a-naive-introduction-to-object-orientation-in-perl-6/</guid>
+      <description>Note: In October 2019, Perl 6 was renamed to Raku. Whenever you come across Perl 6, replace it with Raku. Learn more about the path to Raku.
+Preamble Introduction This tutorial will at most concern itself with the basic of object oriented programming (OOP) in Perl 6. As result, it&amp;rsquo;s important that you have a basic understanding of statements/expressions, variables, conditionals, loops, subroutines (functions), etc., which if not in Perl 6, at least in another programming language.</description>
+    </item>
+    
+    <item>
+      <title>Perl 6 code in rmarkdown</title>
+      <link>https://uzluisf.github.io/blog/perl-6-code-in-rmarkdown/</link>
+      <pubDate>Mon, 13 Aug 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://uzluisf.github.io/blog/perl-6-code-in-rmarkdown/</guid>
+      <description>Note: In October 2019, Perl 6 was renamed to Raku. Whenever you come across Perl 6, replace it with Raku. Learn more about the path to Raku.
+Installation First, start off by installing the R programming language. After this, run R and execute the following command to install rmarkdown: install.packages(&amp;quot;rmarkdown&amp;quot;). While installing rmarkdown, I got the following error message:
+Error: .onLoad failed in loadNamespace() for &amp;#39;tcltk&amp;#39;, details: call: dyn.load(file, DLLpath = DLLpath, .</description>
+    </item>
+    
+    <item>
+      <title>Command Line Arguments in Perl 6</title>
+      <link>https://uzluisf.github.io/blog/command-line-arguments-in-perl-6/</link>
+      <pubDate>Tue, 31 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://uzluisf.github.io/blog/command-line-arguments-in-perl-6/</guid>
+      <description>Note: In October 2019, Perl 6 was renamed to Raku. Whenever you come across Perl 6, replace it with Raku. Learn more about the path to Raku.
+sub MAIN In Perl 6, the parsing of command line arguments is done with the MAIN subroutine which is a special subroutine that parses command line arguments based on their signatures. As with other subroutines, you can have named and positional parameters, optional (and required) parameters, multiple dispatch, etc.</description>
     </item>
     
   </channel>

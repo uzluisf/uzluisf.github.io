@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Luis Uceta">
+<meta name="description" content="Note: In October 2019, Perl 6 was renamed to Raku. Whenever you come across Perl 6, replace it with Raku. Learn more about the path to Raku.
+Installation First, start off by installing the R programming language. After this, run R and execute the following command to install rmarkdown: install.packages(&quot;rmarkdown&quot;). While installing rmarkdown, I got the following error message:
+Error: .onLoad failed in loadNamespace() for &#39;tcltk&#39;, details: call: dyn.load(file, DLLpath = DLLpath, .">
+
+<meta property="og:title" content="Perl 6 code in rmarkdown" />
+<meta property="og:description" content="Note: In October 2019, Perl 6 was renamed to Raku. Whenever you come across Perl 6, replace it with Raku. Learn more about the path to Raku.
+Installation First, start off by installing the R programming language. After this, run R and execute the following command to install rmarkdown: install.packages(&quot;rmarkdown&quot;). While installing rmarkdown, I got the following error message:
+Error: .onLoad failed in loadNamespace() for &#39;tcltk&#39;, details: call: dyn.load(file, DLLpath = DLLpath, ." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://uzluisf.github.io/blog/perl-6-code-in-rmarkdown/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2018-08-13T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-08-13T00:00:00+00:00" />
+
+
+<title>
+
+
+     Perl 6 code in rmarkdown 
+
+</title>
+<link rel="canonical" href="https://uzluisf.github.io/blog/perl-6-code-in-rmarkdown/">
+
+
+
+
+
+
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+  
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/reset.css?t=2023-04-08%2023%3a46%3a41.658871485%20%2b0000%20UTC%20m%3d%2b0.104409802">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/pygments.css?t=2023-04-08%2023%3a46%3a41.658871485%20%2b0000%20UTC%20m%3d%2b0.104409802">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/main.css?t=2023-04-08%2023%3a46%3a41.658871485%20%2b0000%20UTC%20m%3d%2b0.104409802">
+    
+        <link rel="stylesheet" href="https://uzluisf.github.io/css/override.css?t=2023-04-08%2023%3a46%3a41.658871485%20%2b0000%20UTC%20m%3d%2b0.104409802">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://uzluisf.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                
+                <a href="https://uzluisf.github.io/"><img class="avatar" src="https://uzluisf.github.io/img/profile.png" alt="avatar" srcset="https://uzluisf.github.io/img/profile.png 1x,https://uzluisf.github.io/img/profile-2x.png 2x,https://uzluisf.github.io/img/profile-3x.png 3x,https://uzluisf.github.io/img/profile-4x.png 4x"></a>
+            
+            <a href="https://uzluisf.github.io/"><div class="name">Luis Uceta</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        
+                        <li class="nav-blog"><a href="https://uzluisf.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        
+                        <li class="nav-about"><a href="https://uzluisf.github.io/about/"><span>About</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Perl 6 code in rmarkdown
+
+</div>
+
+                    <div class="initials"><a href="https://uzluisf.github.io/"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Mon Aug 13 2018 00:00:00 UTC'>Aug 13, 2018</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>6 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p><strong>Note:</strong> In October 2019, Perl 6 was renamed to Raku. Whenever you
+come across Perl 6, replace it with Raku. Learn more about the
+<a href="https://github.com/Raku/problem-solving/blob/master/solutions/language/Path-to-Raku.md">path to Raku</a>.</p>
+<h2 id="installation">Installation</h2>
+<p>First, start off by installing the <code>R</code> programming language. After this, run <code>R</code> and
+execute the following command to install <code>rmarkdown</code>: <code>install.packages(&quot;rmarkdown&quot;)</code>.
+While installing rmarkdown, I got the following error message:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-r" data-lang="r"><span class="line"><span class="cl"><span class="n">Error</span><span class="o">:</span> <span class="n">.onLoad</span> <span class="n">failed</span> <span class="n">in</span> <span class="nf">loadNamespace</span><span class="p">()</span> <span class="n">for</span> <span class="s">&#39;tcltk&#39;</span><span class="p">,</span> <span class="n">details</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">call</span><span class="o">:</span> <span class="nf">dyn.load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">DLLpath</span> <span class="o">=</span> <span class="n">DLLpath</span><span class="p">,</span> <span class="kc">...</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">error</span><span class="o">:</span> <span class="n">unable</span> <span class="n">to</span> <span class="n">load</span> <span class="n">shared</span> <span class="n">object</span> <span class="s">&#39;/usr/lib/R/library/tcltk/libs/tcltk.so&#39;</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">  <span class="n">libtk8.6.so</span><span class="o">:</span> <span class="n">cannot</span> <span class="n">open</span> <span class="n">shared</span> <span class="n">object</span> <span class="n">file</span><span class="o">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="n">or</span> <span class="n">directory</span>
+</span></span></code></pre></div><p>This was solved by installing the package <code>tk</code> and then proceeding with the
+installation of rmarkdown.</p>
+<h2 id="rmarkdowns-code-chunks">rmarkdown&rsquo;s code chunks</h2>
+<p>Almost everything you can do with rmarkdown you can do it with &ldquo;regular&rdquo; markdown.
+However, one of the outstanding features of rmarkdown is its capability to execute
+chunks of code and spit back their results. To do this, rmarkdown make use of
+of the <a href="https://yihui.name/knitr/">knitr</a> package, an engine for dynamic report
+generation with R. In addition to R, it also supports other language engines
+which you can use to evaluate code from other languages. To list the name of the
+available engines, execute the command <code>names(knitr::knit_engines$get())</code> in the <code>R</code>
+REPL. Just like &ldquo;regular&rdquo; markdown, code chunks can be created with three
+back ticks, followed by the code and ending with another three back ticks.
+If you want a code chunk to be evaluated, specify the language inside the curly
+braces &lsquo;<code>{}</code>&rsquo;, placed after the first three back ticks. For example, to execute
+Perl 5 code, one would specify <code>perl</code> inside <code>{}</code>:</p>
+<pre><code>```{perl}
+sub factorial {
+    my ($n) = @_;
+    return 1 if $n == 0;
+    return factorial($n - 1) * $n;
+}
+
+for (1..4) {
+    print &quot;Factorial of $_: &quot;, factorial($_), &quot;\n&quot;;
+} 
+```
+</code></pre>
+<p>This would be processed as follows, with the result beneath the source
+code if any expression was evaluated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-perl" data-lang="perl"><span class="line"><span class="cl"><span class="k">sub</span> <span class="nf">factorial</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">my</span> <span class="p">(</span><span class="nv">$n</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="nv">$n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">factorial</span><span class="p">(</span><span class="nv">$n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nv">$n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">print</span> <span class="s">&#34;Factorial of $_: &#34;</span><span class="p">,</span> <span class="n">factorial</span><span class="p">(</span><span class="nv">$_</span><span class="p">),</span> <span class="s">&#34;\n&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> 
+</span></span></code></pre></div><pre tabindex="0"><code>## Factorial of 1: 1
+## Factorial of 2: 2
+## Factorial of 3: 6
+## Factorial of 4: 24
+</code></pre><p>Options for the code chunk can be specified within the curly braces. For
+example, to prevent the evaluation of the code chunk you must set <code>eval</code> to
+<code>FALSE</code>:</p>
+<pre><code>```{perl, eval=FALSE}
+my $name = 'Nemy';
+print &quot;Hello, $name!\n&quot;;
+```
+</code></pre>
+<p>This prevents the evaluation of the code chunk and only the source code is shown:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-perl" data-lang="perl"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$name</span> <span class="o">=</span> <span class="s">&#39;Nemy&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">print</span> <span class="s">&#34;Hello, $name!\n&#34;</span><span class="p">;</span>
+</span></span></code></pre></div><p>To hide the source code and still display its evaluation, you can set <code>echo</code> to <code>FALSE</code>:</p>
+<pre><code>```{perl, echo=FALSE}
+my $name = 'Nemy';
+print &quot;Hello, $name!\n&quot;;
+```
+</code></pre>
+<p>Only the result is displayed:</p>
+<pre tabindex="0"><code>## Hello, Nemy!
+</code></pre><p>There is a bunch of options you can specify within the curly braces.
+Here&rsquo;s a small list of the ones I&rsquo;ve commonly used:</p>
+<ul>
+<li><strong><code>engine</code></strong> - <code>R</code> by default. knitr will evaluate the chunk in the named
+language, e.g. <code>engine = 'python'</code>.</li>
+<li><strong><code>eval</code></strong> - <code>TRUE</code> by default. If <code>FALSE</code>, knitr will not run the code in the
+code chunk.</li>
+<li><strong><code>echo</code></strong> - <code>TRUE</code> by default. If <code>FALSE</code>, knitr will not display the code in the
+code chunk above its result in the final document.</li>
+</ul>
+<ul>
+<li><strong><code>collapse</code></strong> - <code>FALSE</code> by default. If <code>TRUE</code>,  knitr will collapse all the
+source and output blocks created by the chunk into a single block.</li>
+<li><strong><code>comment</code></strong> - <code>##</code> by default. A character string which knitr will append to the
+start of each line of results in the final document, e.g. <code>comment = '#=&gt;'</code>.</li>
+</ul>
+<p>Find more information about the <a href="https://yihui.name/knitr/options/">different options here</a>.</p>
+<h2 id="perl-6-in-rmarkdown">Perl 6 in rmarkdown</h2>
+<p>As of now, knitr doesn&rsquo;t support a language engine for Perl 6. However, you can
+use knitr&rsquo;s engine language extensibility to execute Perl 6 code chunks in
+rmarkdown by adding the following R code chunk in your file:</p>
+<pre><code>```{r setup}
+library(knitr)
+eng_perl6 &lt;- function(options) {
+  # create a temporary file
+  f &lt;- basename(tempfile(&quot;perl6&quot;, '.', paste('.', &quot;perl6&quot;, sep = '')))
+  on.exit(unlink(f)) # cleanup temp file on function exit
+  writeLines(options$code, f)
+  out &lt;- ''
+
+  # if eval != FALSE compile/run the code, preserving output
+  if (options$eval) {
+    out &lt;- system(sprintf('perl6 %s', paste(f, options$engine.opts)), intern=TRUE)
+  }
+
+  # spit back stuff to the user
+  engine_output(options, options$code, out)
+}
+
+knitr::knit_engines$set(perl6=eng_perl6)
+```
+</code></pre>
+<p>This workaround was taken from
+<a href="https://stackoverflow.com/questions/45857934/executing-perl-6-code-in-rmarkdown/45864801#45864801">here</a>
+and
+<a href="https://www.r-bloggers.com/running-go-language-chunks-in-r-markdown-rmd-files/">here</a>.</p>
+<p>This will allow you to do this:</p>
+<pre><code>```{r, engine='perl6'}
+say [*] 1..5;
+```
+</code></pre>
+<p>However, instead of adding that piece of R code in every file where Perl 6 code is
+being processed, you can make use of the engine language for Perl 5 and change
+its path to the Perl 6 executable by setting <code>engine.path</code> to <code>perl6</code>.
+Then, you can process Perl 6 code by making the chunk header look as follows:</p>
+<pre><code>```{perl, engine.path='perl6'}
+say [*] 1..5;
+```
+</code></pre>
+<p>Now you should be able to evaluate Perl 6 code chunks:</p>
+<pre><code>```{perl, engine.path='perl6', comment='#=&gt;', collapse=TRUE}
+class Point {
+    has $.x = 0;
+    has $.y = 0;
+    method distance-to-center() {
+        return sqrt($!x**2 + $!y**2);
+    }
+}
+
+my $p = Point.new(x =&gt; 3, y =&gt; 4);
+say $p.distance-to-center();
+```
+</code></pre>
+<p>would be processed as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-perl6" data-lang="perl6"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Point</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">method</span> <span class="nf">distance-to-center</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">sqrt</span><span class="p">(</span><span class="nv">$!x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="nv">$!y</span><span class="o">**</span><span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$p</span> <span class="o">=</span> <span class="n">Point</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">x</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="o">,</span> <span class="s">y</span> <span class="o">=&gt;</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$p</span><span class="o">.</span><span class="nf">distance-to-center</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#=&gt; 5</span>
+</span></span></code></pre></div><h2 id="addendum">Addendum</h2>
+<p>This post was inspired from my desire for having an easy setup
+to transcribe lecture notes using vim. The notes might be sparkled with LATEX,
+some code snippets, and converted to .pdf file for reviewing along the way.
+rmarkdown&rsquo;s easiness of use and extensive capabilities make it the right tool
+for this job.</p>
+<p>To do the conversion from a .rmd to a .pdf file directly from vim, I have
+the following line, mapped to F5, in my .vimrc to ease the process:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-vim" data-lang="vim"><span class="line"><span class="cl"><span class="nx">autocmd</span> <span class="nx">Filetype</span> <span class="nx">rmd</span> <span class="nx">map</span> <span class="p">&lt;</span><span class="nx">F5</span><span class="p">&gt;</span> :<span class="p">!</span><span class="nx">echo</span><span class="p">&lt;</span><span class="nx">space</span><span class="p">&gt;</span>&#34;<span class="nx">require</span><span class="p">(</span><span class="nx">rmarkdown</span><span class="p">)</span>;<span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="p">&lt;</span><span class="nx">space</span><span class="p">&gt;</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;&lt;c-r&gt;%&#39;</span><span class="p">)</span>&#34;<span class="p">&lt;</span><span class="nx">space</span><span class="p">&gt;</span>\<span class="p">|&lt;</span><span class="nx">space</span><span class="p">&gt;</span><span class="nx">R</span><span class="p">&lt;</span><span class="nx">space</span><span class="p">&gt;--</span><span class="nx">vanilla</span><span class="p">&lt;</span><span class="nx">enter</span><span class="p">&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>As you can see, this is just loading the rmarkdown package in <code>R</code>, passing the
+current .rmd file to the function <code>render</code> and piping its result to <code>R --vanilla</code>
+to make the program non-interactive.</p>
+<p>Note that you might need to have <code>pandoc</code> installed for this to work. As for the
+pandoc latex template, I use a slightly modified version of
+<a href="https://github.com/Wandmalfarbe/pandoc-latex-template">eisvogel.latex</a>.</p>
+<p>This is a sample of what the YAML preamble (for metadata) might look like
+for any of the notes:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Perl 6 in rmarkdown&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">author</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Luis F. Uceta&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">date</span><span class="p">:</span><span class="w"> </span><span class="l">Aug 13, 2018</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">output</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">pdf_document</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">latex_engine</span><span class="p">:</span><span class="w"> </span><span class="l">pdflatex</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">toc</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">template</span><span class="p">:</span><span class="w"> </span><span class="l">eisvogel.latex</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">fontsize</span><span class="p">:</span><span class="w"> </span><span class="l">12pt</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">geometry</span><span class="p">:</span><span class="w"> </span><span class="l">margin=1in </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">linkcolor</span><span class="p">:</span><span class="w"> </span><span class="l">red</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">urlcolor</span><span class="p">:</span><span class="w"> </span><span class="l">blue</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span></code></pre></div><p>And this is the <a href="https://www.scribd.com/document/386099184/2018-08-13-rmarkdown-vim-perl6#">resulting pdf</a> for this file with the previous YAML preamble
+and using the mentioned latex template. Please note that this pdf might not reflect
+the latest changes made to this post.</p>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="https://uzluisf.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    
+  
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

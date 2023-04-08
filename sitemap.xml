@@ -2,29 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://uzluisf.github.io/blog/new-post/</loc>
-    <lastmod>2023-04-08T19:23:33-04:00</lastmod>
+    <loc>https://uzluisf.github.io/blog/deploy-hugo-site-with-github-actions/</loc>
+    <lastmod>2023-04-08T19:15:39-04:00</lastmod>
   </url><url>
     <loc>https://uzluisf.github.io/</loc>
-    <lastmod>2023-04-08T19:23:33-04:00</lastmod>
-  </url><url>
-    <loc>https://uzluisf.github.io/blog/deploy-hugo-site-with-github-actions/</loc>
     <lastmod>2023-04-08T19:15:39-04:00</lastmod>
   </url><url>
     <loc>https://uzluisf.github.io/blog/buffers-nodejs-raku/</loc>
     <lastmod>2023-03-15T17:09:14-05:00</lastmod>
   </url><url>
-    <loc>https://uzluisf.github.io/about/</loc>
-    <lastmod>2023-01-01T00:00:00+00:00</lastmod>
+    <loc>https://uzluisf.github.io/blog/containers-in-raku/</loc>
+    <lastmod>2020-04-03T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://uzluisf.github.io/blog/les-mis%C3%A9rables-by-victor-hugo/</loc>
-    <lastmod>2015-12-21T04:05:25-06:00</lastmod>
+    <loc>https://uzluisf.github.io/blog/with-a-new-name/</loc>
+    <lastmod>2020-01-23T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://uzluisf.github.io/blog/metamorphosis-by-franz-kafka/</loc>
-    <lastmod>2015-12-21T04:03:46-06:00</lastmod>
+    <loc>https://uzluisf.github.io/blog/instance-attributes-in-raku/</loc>
+    <lastmod>2019-05-30T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://uzluisf.github.io/blog/use-at-instead-of-head/</loc>
-    <lastmod>2015-08-25T17:09:14-05:00</lastmod>
+    <loc>https://uzluisf.github.io/tags/caldav/</loc>
+    <lastmod>2019-03-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/tags/fruxx/</loc>
+    <lastmod>2019-03-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/blog/syncing-your-tasks-with-fruux-and-tasks/</loc>
+    <lastmod>2019-03-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/tags/</loc>
+    <lastmod>2019-03-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/tags/tasks/</loc>
+    <lastmod>2019-03-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/blog/a-naive-introduction-to-object-orientation-in-perl-6/</loc>
+    <lastmod>2018-08-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/blog/perl-6-code-in-rmarkdown/</loc>
+    <lastmod>2018-08-13T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/blog/command-line-arguments-in-perl-6/</loc>
+    <lastmod>2018-07-31T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://uzluisf.github.io/about/</loc>
     <lastmod>2015-08-22T06:42:21-07:00</lastmod>
@@ -32,14 +50,6 @@
     <loc>https://uzluisf.github.io/blog/</loc>
     <lastmod>2015-08-22T06:42:21-07:00</lastmod>
   </url><url>
-    <loc>https://uzluisf.github.io/about/colophon/</loc>
-    <lastmod>2015-08-22T06:28:26-07:00</lastmod>
-  </url><url>
-    <loc>https://uzluisf.github.io/code/</loc>
-    <lastmod>2015-08-19T20:29:37-07:00</lastmod>
-  </url><url>
     <loc>https://uzluisf.github.io/categories/</loc>
-  </url><url>
-    <loc>https://uzluisf.github.io/tags/</loc>
   </url>
 </urlset>

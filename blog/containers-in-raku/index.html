@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Luis Uceta">
+<meta name="description" content="In programming languages, a variable is a way of associating a particular value with a name known to the compiler. For instance, take the variable declaration with its assignment, my $x = &quot;Hello&quot;. This associates the value 42 with the name $x and while this is true for most intents and purposes, this isn&rsquo;t the entire story in Raku.
+In Raku, when the compiler encounters the variable declaration my $x, the compiler registers it in some internal symbol table.">
+
+<meta property="og:title" content="Containers in Raku" />
+<meta property="og:description" content="In programming languages, a variable is a way of associating a particular value with a name known to the compiler. For instance, take the variable declaration with its assignment, my $x = &quot;Hello&quot;. This associates the value 42 with the name $x and while this is true for most intents and purposes, this isn&rsquo;t the entire story in Raku.
+In Raku, when the compiler encounters the variable declaration my $x, the compiler registers it in some internal symbol table." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://uzluisf.github.io/blog/containers-in-raku/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2020-04-03T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-04-03T00:00:00+00:00" />
+
+
+<title>
+
+
+     Containers in Raku 
+
+</title>
+<link rel="canonical" href="https://uzluisf.github.io/blog/containers-in-raku/">
+
+
+
+
+
+
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+  
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/reset.css?t=2023-04-08%2023%3a46%3a41.75140946%20%2b0000%20UTC%20m%3d%2b0.196947877">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/pygments.css?t=2023-04-08%2023%3a46%3a41.75140946%20%2b0000%20UTC%20m%3d%2b0.196947877">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/main.css?t=2023-04-08%2023%3a46%3a41.75140946%20%2b0000%20UTC%20m%3d%2b0.196947877">
+    
+        <link rel="stylesheet" href="https://uzluisf.github.io/css/override.css?t=2023-04-08%2023%3a46%3a41.75140946%20%2b0000%20UTC%20m%3d%2b0.196947877">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://uzluisf.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                
+                <a href="https://uzluisf.github.io/"><img class="avatar" src="https://uzluisf.github.io/img/profile.png" alt="avatar" srcset="https://uzluisf.github.io/img/profile.png 1x,https://uzluisf.github.io/img/profile-2x.png 2x,https://uzluisf.github.io/img/profile-3x.png 3x,https://uzluisf.github.io/img/profile-4x.png 4x"></a>
+            
+            <a href="https://uzluisf.github.io/"><div class="name">Luis Uceta</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        
+                        <li class="nav-blog"><a href="https://uzluisf.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        
+                        <li class="nav-about"><a href="https://uzluisf.github.io/about/"><span>About</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Containers in Raku
+
+</div>
+
+                    <div class="initials"><a href="https://uzluisf.github.io/"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Fri Apr 3 2020 00:00:00 UTC'>Apr 3, 2020</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>19 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p>In programming languages, a variable is a way of associating a particular
+value with a name known to the compiler. For instance, take the variable
+declaration with its assignment, <code>my $x = &quot;Hello&quot;</code>. This associates the value
+<code>42</code> with the name <code>$x</code> and while this is true for most intents and purposes,
+this isn&rsquo;t the entire story in Raku.</p>
+<p>In Raku, when the compiler encounters the variable declaration <code>my $x</code>,
+the compiler registers it in some internal symbol table. A symbol table generally
+provides object lookup by name and allows the compiler to get an object
+from the mention of its name in a program&rsquo;s source code. In the case of <code>my $x = &quot;Hello&quot;</code>, the lexical pad entry for the variable <code>$x</code> is a pointer to an object
+of type <code>Scalar</code> that serve as the <em>container</em> for the object <code>&quot;Hello&quot;</code>.
+Pictorially, this could be represented as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl"> Table      Container       Value
+</span></span><span class="line"><span class="cl">-------       +---+      +---------+
+</span></span><span class="line"><span class="cl">$x | *   ---&gt; | * | ---&gt; | &#34;Hello&#34; |
+</span></span><span class="line"><span class="cl">-------       +---+      +---------+
+</span></span></code></pre></div><p>In the diagram, the cell (labeled <code>*</code>) in the symbol table is associated with
+the name <code>$x</code>. This is known as <em>binding</em>. Names are often bound to objects that
+serve as containers for other objects (e.g., <code>Scalar</code> as the container for the
+object <code>&quot;Hello&quot;</code>), but that isn&rsquo;t necessarily always the case as we&rsquo;ll see in
+the next section. For the moment, it suffices to say that names using the sigil
+<code>$</code> make use of the <code>Scalar</code> container and can be bound to any object.</p>
+<h2 id="item-container">Item container</h2>
+<p>Let&rsquo;s start off with <a href="https://docs.raku.org/language/variables#index-entry-_(sigilless_variables)">sigilless
+variables</a>.
+In Raku, a <em>sigilless</em> variable
+is a variable without a sigil and whose value isn&rsquo;t containerized. They&rsquo;re
+declared by using the escape character <code>\</code> and we associate a value to them
+by using the binding operator (<code>:=</code>). For example:</p>
+<pre tabindex="0"><code>my \y := 42;
+say y; #=&gt; «42␤»
+</code></pre><p>Pictorially, this could be depicted as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl"> Table           Value
+</span></span><span class="line"><span class="cl">-------        +---------+
+</span></span><span class="line"><span class="cl">y | *   ---&gt;   | &#34;Hello&#34; |
+</span></span><span class="line"><span class="cl">-------        +---------+
+</span></span></code></pre></div><p>Sigilless variables are aliased to their values, and thus they aren&rsquo;t bound
+to objects that serves as containers for their values. This is the case
+with the name <code>y</code>. The name is bound directly to the value <code>42</code>, and thus no
+container sits between the variable&rsquo;s name and the bound value. Another way
+of interpreting it is that both <code>y</code> and <code>42</code> now represents the literal value
+<code>42</code>. This implies that after a name has been bound to a value, you cannot
+rebind it to something else:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="mi">42</span> <span class="o">:=</span> <span class="mi">45</span><span class="p">;</span> <span class="k">#= </span><span class="sd">Cannot use bind operator with this left-hand side
+</span></span></span><span class="line"><span class="cl"><span class="sd"></span><span class="n">y</span> <span class="o">:=</span> <span class="mi">45</span><span class="p">;</span>  <span class="k">#= </span><span class="sd">Cannot use bind operator with this left-hand side
+</span></span></span></code></pre></div><p>The reason for the above is that the object representing the integer <code>42</code> will
+never change to represent another different object. In Raku,
+<em>value types</em> (and their <em>instance objects</em>) such as <code>Int</code> (e.g., <code>42</code>)
+and <code>Str</code> (e.g., <code>&quot;Hello&quot;</code>) are immutable.</p>
+<p>How do we mutate a variable after a value has been bound to it? For starters,
+we can try getting hold of a <a href="https://docs.raku.org/type/Scalar"><code>Scalar</code></a>
+container that will serve as a proxy
+between the variable&rsquo;s name and the value. We can&rsquo;t instantiate a <code>Scalar</code> via
+the <code>new</code> method, but the sigil <code>$</code> is perfect for this task; the <code>Scalar</code>
+container type is associated with the sigil <code>$</code> by default. Instead of a
+literal value, we bind a lexical <code>Scalar</code> container to the variable:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\z</span> <span class="o">:=</span> <span class="k">my</span> <span class="nv">$</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">z</span><span class="p">;</span>   <span class="c1">#=&gt; «(Any)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">z</span> <span class="o">:=</span> <span class="mi">42</span><span class="p">;</span> <span class="c1"># Cannot use bind operator with this left-hand side</span>
+</span></span></code></pre></div><p>However, this isn&rsquo;t of much help as evidenced by the <code>Cannot use bind operator...</code>
+error. When we declared the variable <code>z</code>, the value of <code>$</code> was bound to it and
+trying to rebind the variable will cause the same error as before. Hopefully
+this is clear by now but the reason is that we&rsquo;re trying to rebind to a value
+(namely, a <code>Scalar</code> container); we cannot do
+that. However, we&rsquo;re not far off the mark; what we want is to be able to
+replace a container&rsquo;s value and not replace the container bound to the
+variable. This is where the assignment operator (<code>=</code>) operator comes in,
+as a close cousin of the binding operator (<code>:=</code>).</p>
+<p>Unlike the binding operator which makes the variable and its bound value the
+same thing, the assignment operator places the value of the right-hand side into
+the container on the left-hand side of the assignment.</p>
+<p>Let&rsquo;s try again. Instead of trying to bind to the already declared variable,
+we&rsquo;ll assign to it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\z</span> <span class="o">:=</span> <span class="k">my</span> <span class="nv">$</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">z</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">z</span><span class="p">;</span> <span class="c1">#=&gt; «42␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">z</span> <span class="o">=</span> <span class="mi">45</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">z</span><span class="p">;</span> <span class="c1">#=&gt; «45␤»</span>
+</span></span></code></pre></div><p>As illustrated above, we can now assign a value, as well as replace it with
+other value. We can even add a type constraint to the container:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\z</span> <span class="o">:=</span> <span class="k">my</span> <span class="nb">Int</span> <span class="nv">$</span><span class="p">;</span> <span class="c1"># Only values of type Int</span>
+</span></span><span class="line"><span class="cl"><span class="nb">z</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>     <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="nb">z</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">T</span><span class="p">&#39;;</span>   <span class="c1"># Error: Type check failed in assignment;</span>
+</span></span><span class="line"><span class="cl">           <span class="c1"># expected Int but got Str (&#34;One&#34;)</span>
+</span></span></code></pre></div><h3 id="the-scalar-sigil">The scalar sigil</h3>
+<p>We&rsquo;ve created a variable that we can <em>assign</em> a value to and then change it
+via assignments. However, this seems to be a tedious process since we must
+declare a sigilless variable and then bind a <code>Scalar</code> container to it.
+As stated earlier, variables that are prefixed with the sigil <code>$</code> have <code>Scalar</code>
+containers created for them automatically; these variables are known as
+<em>scalar</em> variables:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$x</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nb">Int</span> <span class="nv">$y</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$y</span> <span class="o">=</span> <span class="nv">$x</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nb">Str</span> <span class="nv">$z</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$z</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">Hello</span><span class="p">&#39;;</span>
+</span></span></code></pre></div><p>We can also bind to <code>$</code>-sigilled variables, in which case no <code>Scalar</code> container
+is created and the variable is an alias to the bound value. In this state,
+a <code>$</code>-sigilled variable is much like a sigilless variable. It wasn&rsquo;t mentioned
+earlier but the truth is that sigilless variables always bind, regardless
+of whether binding (<code>:=</code>) or assignment (<code>=</code>) is used:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$t</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1"># bind 1 to $t, no Scalar container created</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\u</span> <span class="o">:=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1"># bind 2 to u</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\v</span>  <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1"># bind 2 to v</span>
+</span></span></code></pre></div><h3 id="more-about-scalar-containers">More about Scalar containers</h3>
+<p><code>Scalar</code> containers delegate all operations to the value they contain.
+Whenever you use containers they use the value in them, and for most
+purposes they stay hidden and are invisible during ordinary use of Raku. For
+example, given:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$nvalue</span> <span class="o">:=</span> <span class="p">&#34;</span><span class="s2">hello</span><span class="p">&#34;;</span> <span class="c1"># binding, no Scalar container</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$cvalue</span>  <span class="o">=</span> <span class="p">&#34;</span><span class="s2">hello</span><span class="p">&#34;;</span> <span class="c1"># assignment, Scalar container</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$nvalue</span><span class="p">;</span>              <span class="c1">#=&gt; «hello␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$cvalue</span><span class="p">;</span>              <span class="c1">#=&gt; «hello␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$nvalue</span><span class="o">.</span><span class="nb">substr</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">#=&gt; «he␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$cvalue</span><span class="o">.</span><span class="nb">substr</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">#=&gt; «he␤»</span>
+</span></span></code></pre></div><p>you&rsquo;d have a hard time telling the difference between <code>$nvalue</code> and
+<code>$cvalue</code>. Unless you draw upon the features that containers provide
+such as assigning to variables, passing <em>rw</em> objects to a function, etc,
+you won&rsquo;t notice their presence (or lack thereof). In order to check whether a
+variable is bound either to a value or a container, we can use the introspective
+pseudo-method <a href="https://docs.raku.org/language/mop#index-entry-syntax_VAR-VAR"><code>VAR</code></a>,
+which returns the underlying <code>Scalar</code> object, if any:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$nvalue</span> <span class="o">:=</span> <span class="p">&#34;</span><span class="s2">hello</span><span class="p">&#34;;</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$cvalue</span>  <span class="o">=</span> <span class="p">&#34;</span><span class="s2">hello</span><span class="p">&#34;;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$nvalue</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; «Str␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$cvalue</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; «Str␤», yep containers work hard to stay hidden.</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$nvalue</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Str␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$cvalue</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span></code></pre></div><p>So far, we&rsquo;ve been able to bind both a single value and a container
+to a variable. How about binding a list of values to a variable? In Raku, we
+declare a literal list (<code>List</code>) of values using commas and/or semicolons:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$evens</span> <span class="o">:=</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="p">;</span>              <span class="c1">#=&gt; «(2 4 8)␤» </span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>          <span class="c1">#=&gt; «(2 4 8)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «List␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span>           <span class="c1">#=&gt; «2␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; «Int␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Int␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$even</span>     <span class="o">:=</span> <span class="mi">3</span><span class="p">;</span> <span class="c1"># Cannot use bind operator with this left-hand side</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$evens</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;</span> <span class="c1"># Cannot use bind operator with this left-hand side </span>
+</span></span><span class="line"><span class="cl"><span class="nv">$evens</span><span class="o">.</span><span class="nb">push</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span> <span class="c1"># Cannot use bind operator with this left-hand side </span>
+</span></span></code></pre></div><p>As you can see, attempting to re-bind some value gets us an error, regardless of
+whether the value comes from a <code>List</code> or a literal value. In addition,
+we cannot modify the list by adding new values. This is how <code>List</code>s manage to
+be immutable in Raku; neither the list itself nor its values can be mutated.</p>
+<p>In order to create a list whose elements can be mutated, we can replicate
+the process we went through before with a single value: containerize
+each of the list&rsquo;s slots (or at least, those that we need to be mutable),
+and bind the whole list to the variable. Thus, instead of a list of literal
+values, we end up with a list of <code>Scalar</code> objects that can be assigned to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$evens</span> <span class="o">:=</span> <span class="k">my</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">2</span><span class="o">,</span> <span class="k">my</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">4</span><span class="o">,</span> <span class="k">my</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="p">;</span>              <span class="c1">#=&gt; «(2 4 8)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «List␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span>           <span class="c1">#=&gt; «2␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$evens</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>           <span class="c1"># OK</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$evens</span><span class="o">.</span><span class="nb">push</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>          <span class="c1"># Cannot call &#39;push&#39; on an immutable &#39;List&#39;</span>
+</span></span></code></pre></div><p>We&rsquo;ve containerized each of the list&rsquo;s items, not the list itself. Therefore,
+while we can mutate each of its elements we cannot modify the list.</p>
+<p>Each of the <code>Scalar</code> objects can also be type constrained:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$evens</span> <span class="o">:=</span> <span class="p">(</span><span class="k">my</span> <span class="nb">Int</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">2</span><span class="o">,</span> <span class="k">my</span> <span class="nb">Int</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">4</span><span class="o">,</span> <span class="k">my</span> <span class="nb">Int</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$evens</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">=</span> <span class="mi">6</span><span class="p">;</span>      <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$evens</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">four</span><span class="p">&#39;;</span> <span class="c1"># Typecheck failure</span>
+</span></span></code></pre></div><p>So far we&rsquo;ve only added type constrains to containers holding values
+such as <code>2</code> and <code>&quot;Hi&quot;</code>, however we can do the same for <code>List</code>. For a variable
+like <code>$evens</code>, we might need it only to hold a list of things which are
+accessed by their indexes. In Raku, there&rsquo;s the
+<a href="https://docs.raku.org/type/Positional"><code>Positional</code></a> role for this task.
+This is the same role implemented by types such as <code>List</code>, <code>Array</code>, etc. that
+support indexing using the operator <code>[]</code>. We could constrain the <code>Scalar</code>
+container to which we&rsquo;d assign the list, however we don&rsquo;t want the <code>List</code>
+containerized. Instead, we constrain the variable the <code>List</code> is bound
+to:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># This works</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nb">Positional</span> <span class="nv">$evens</span> <span class="o">:=</span> <span class="p">(</span><span class="k">my</span> <span class="nb">Int</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">2</span><span class="o">,</span> <span class="k">my</span> <span class="nb">Int</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">4</span><span class="o">,</span> <span class="k">my</span> <span class="nb">Int</span> <span class="nv">$</span> <span class="o">=</span> <span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># This doesn&#39;t work</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nb">Positional</span> <span class="nv">$odds</span> <span class="o">:=</span> <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Type check failed in binding; expected Positional but got Int (2)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nb">Positional</span><span class="o">[</span><span class="nb">Int</span><span class="o">]</span> <span class="nv">$ints</span> <span class="o">:=</span> <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Type check failed in binding; expected Positional[Int] but got Int (3)</span>
+</span></span></code></pre></div><p>The variable <code>$evens</code> ends up being a <code>Positional</code> variable whose
+value is a list with mutable items. It bears repeating that the list itself is
+immutable and only its elements are mutable. For example, you can neither
+add nor remove elements from the list.</p>
+<h3 id="the-callable-sigil">The callable sigil</h3>
+<p>The <code>&amp;</code> sigil implies a <code>Callable</code> type constraint for things that support to
+be called via the operator <code>()</code>, and it offers the same shortcuts for
+assignment which gives you a <code>Callable</code> and creates a <code>Scalar</code> for the value.
+Similar to the <code>$</code> sigil, this sigil supports item-like assignment.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">&amp;b</span> <span class="o">:=</span> <span class="p">{</span> <span class="nv">$^x</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">&amp;b</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; «-&gt; $x { #`(Block|94463244345248) ... }␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">&amp;b</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Block␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">&amp;c</span> <span class="o">=</span> <span class="p">{</span> <span class="nv">$^x</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">&amp;c</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; «-&gt; $x { #`(Block|94463244345248) ... }␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">&amp;c</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span></code></pre></div><h2 id="aggregate-containers">Aggregate containers</h2>
+<h3 id="the-positional-sigil">The positional sigil</h3>
+<p>Declaring a <code>Positional</code> variable whose value is a list with mutable items
+as done in the previous section looks awfully verbose. Thankfully, Raku provides
+some syntax to simplify it.</p>
+<p>First, we don&rsquo;t need to explicitly type constrain the variable with
+<code>Positional</code>. Instead of the sigil <code>$</code>, we can use the sigil <code>@</code> to indicate
+that the variable has a <code>Positional</code> type constraint:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@evens</span> <span class="o">:=</span> <span class="mi">2</span> <span class="p">;</span>   <span class="c1"># Type check failed in binding;</span>
+</span></span><span class="line"><span class="cl">                   <span class="c1"># expected Positional but got Int (2)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nb">Int</span> <span class="nv">@ints</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1"># Type check failed in binding;</span>
+</span></span><span class="line"><span class="cl">                   <span class="c1"># expected Positional[Int] but got Int (2)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@odds</span> <span class="o">:=</span> <span class="mi">1</span><span class="o">,</span><span class="p">;</span>    <span class="c1"># a single-element list,</span>
+</span></span><span class="line"><span class="cl">                   <span class="c1"># notice the trailing comma</span>
+</span></span></code></pre></div><p>Second, we&rsquo;ll surround our comma-separated list with square brackets. This tells
+the compiler to create an <code>Array</code> instead of a <code>List</code>. Unlike a <code>List</code>,
+an <code>Array</code> is itself mutable and each of its elements are mutable because
+they&rsquo;re all placed into <code>Scalar</code> containers automatically, just like we did
+manually in the previous section. By the way, we can surround our lists with
+parentheses but there are only needed where grouping is necessary; in Raku
+commas, not parentheses, create lists.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@evens</span> <span class="o">:=</span> <span class="o">[</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="o">]</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@evens</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>          <span class="c1">#=&gt; «[2 4 8]␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@evens</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «Array␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@evens</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">@evens</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">=</span> <span class="nv">@evens</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">;</span> <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="nv">@evens</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="o">=</span> <span class="nv">@evens</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span> <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="nv">@evens</span><span class="o">[</span><span class="mi">4</span><span class="o">]</span> <span class="o">=</span> <span class="nv">@evens</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span> <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@evens</span><span class="p">;</span> <span class="c1">#=&gt; «[2 4 6 8 10]␤»</span>
+</span></span></code></pre></div><p>Our code became a lot shorter, but we can still toss out a couple more
+characters by using assignment instead of binding. As demonstrated previously,
+assigning to a <code>$</code>-sigilled variable gives you a <code>Scalar</code> container for free.
+This is also the case while <em>assigning</em> to <code>@</code>-sigilled variable; it provides you
+with an <code>Array</code> container for free. If we switch to assignment, our previous
+code can become a lot shorter by dropping the square brackets altogether. We
+know they instruct the compiler to create an <code>Array</code> but this is already done by
+<code>@</code> when performing an assignment:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@evens</span> <span class="o">=</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@evens</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>          <span class="c1">#=&gt; «[2 4 8]␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@evens</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «Array␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@evens</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span></code></pre></div><p>Literal <code>Array</code>s are created with the array constructor
+<a href="https://docs.raku.org/routine/%5B%20%5D"><code>[]</code></a>, however this isn&rsquo;t needed if you&rsquo;re
+assigning to a <code>[]</code>-sigilled variable as demonstrated earlier.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="nb">say</span> <span class="o">[</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="o">].</span><span class="nb">VAR</span><span class="p">;</span>          <span class="c1">#=&gt; «[2 4 8]␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="o">[</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «Array␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="o">[</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="o">][</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; «2␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="o">[</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="o">][</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span></code></pre></div><h3 id="the-associative-sigil">The associative sigil</h3>
+<p>Everything we&rsquo;ve done so far can be applied to <code>%</code>-sigilled variables. The <code>%</code>
+sigil implies an <code>Associative</code> type constraint for name-based lookup via the
+operator <code>{}</code>, and it offers the same shortcuts for assignment which gives you a
+<code>Hash</code> container for the variable and creates <code>Scalar</code> containers for each of
+the values.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">%h</span> <span class="o">:=</span> <span class="nb">Map</span><span class="o">.</span><span class="nb">new</span><span class="p">(&#39;</span><span class="s1">a</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">b</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%h</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>          <span class="c1">#=&gt; «Map.new((a =&gt; 1, b =&gt; 2))␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%h</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «Map␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%h</span><span class="p">&lt;</span><span class="s">a</span><span class="p">&gt;</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Int␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">%h</span><span class="p">&lt;</span><span class="s">a</span><span class="p">&gt;</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>          <span class="c1"># Cannot modify an immutable Int (1)...</span>
+</span></span></code></pre></div><p><code>Map</code>s are to <code>Hash</code>es as <code>List</code>s are to <code>Array</code>s; a map is immutable
+and neither the map itself nor its values can be mutated. This is because
+<code>Map</code>s don&rsquo;t containerize their values. Unlike <code>List</code>s that have a a simple list
+constructor, there isn&rsquo;t a map constructor so we have to instantiate
+the <code>Map</code> class.</p>
+<p>To get a mutable <code>Map</code> (known as a <code>Hash</code>), we can <em>assign</em> a <code>Map</code> to
+a <code>%</code>-sigilled variable which is similar to the assignment of a <code>List</code> to a
+<code>@</code>-sigilled variable in order to get an <code>Array</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">%h</span> <span class="o">=</span> <span class="nb">Map</span><span class="o">.</span><span class="nb">new</span><span class="p">(&#39;</span><span class="s1">a</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">b</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%h</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>          <span class="c1">#=&gt; «{a =&gt; 1, b =&gt; 2}␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%h</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «Hash␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%h</span><span class="p">&lt;</span><span class="s">a</span><span class="p">&gt;</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">%h</span><span class="p">&lt;</span><span class="s">a</span><span class="p">&gt;</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>          <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="nv">%h</span><span class="p">&lt;</span><span class="s">c</span><span class="p">&gt;</span> <span class="o">=</span> <span class="mi">25</span><span class="p">;</span>          <span class="c1"># OK!</span>
+</span></span></code></pre></div><p>Literal <code>Hash</code>es can be created with the hash constructor <code>%()</code>,
+however this isn&rsquo;t needed if you&rsquo;re assigning to a <code>%</code>-sigilled variable.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%</span><span class="p">(&#39;</span><span class="s1">a</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">b</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>          <span class="c1">#=&gt; «{a =&gt; 1, b =&gt; 2}␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%</span><span class="p">(&#39;</span><span class="s1">a</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">b</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span>    <span class="c1">#=&gt; «Hash␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%</span><span class="p">(&#39;</span><span class="s1">a</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">b</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">2</span><span class="p">)&lt;</span><span class="s">a</span><span class="p">&gt;</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; «1␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">%</span><span class="p">(&#39;</span><span class="s1">a</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="p">&#39;</span><span class="s1">b</span><span class="p">&#39;</span><span class="o">,</span> <span class="mi">2</span><span class="p">)&lt;</span><span class="s">a</span><span class="p">&gt;</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span></code></pre></div><h2 id="scalarization">Scalarization</h2>
+<p>Along the way we learned that assignment to a <code>$</code>-sigilled variable gives you a
+free <code>Scalar</code> container. This applies to both single values (e.g, a number, a
+string, etc.) and aggregate values (e.g., a list of numbers, a list of strings,
+etc.).</p>
+<p>For a <code>$</code>-sigilled variable, the assignment of an entire list (or any
+aggregate type for that matter) is still a single thing, namely <em>a list</em>,
+and it treats it as such. This is best demonstrated by comparing
+a <code>List</code> <strong>bound</strong> to a <code>$</code>-sigilled variable (in which case no <code>Scalar</code>
+is involved) and a <code>List</code> that is <strong>assigned</strong> to a <code>$</code>-sigilled
+variable (in which case an automatic <code>Scalar</code> container is created):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># Binding</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$list</span> <span class="o">:=</span> <span class="p">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$list</span><span class="o">.</span><span class="nb">raku</span><span class="p">;</span>            <span class="c1">#=&gt; «(1, 2, 3)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="p">&#34;</span><span class="s2">Item: </span><span class="nv">$_</span><span class="p">&#34;</span> <span class="k">for</span> <span class="nv">$list</span><span class="p">;</span>  <span class="c1">#=&gt; «Item: 1␤Item: 2␤Item: 3␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Assignment</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$list</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$list</span><span class="o">.</span><span class="nb">raku</span><span class="p">;</span>            <span class="c1">#=&gt; «$(1, 2, 3)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="p">&#34;</span><span class="s2">Item: </span><span class="nv">$_</span><span class="p">&#34;</span> <span class="k">for</span> <span class="nv">$list</span><span class="p">;</span>  <span class="c1">#=&gt; «Item: 1 2 3␤»</span>
+</span></span></code></pre></div><p>The <code>raku</code> method gives us an extra insight and shows us the second <code>List</code>
+with a <code>$</code> before it, to indicate it&rsquo;s containerized in a <code>Scalar</code>.
+More importantly, when we iterated over our <code>List</code>s with the <code>for</code> loop,
+the second <code>List</code> resulted in just a single iteration: the entire <code>List</code> as
+one item. The <code>Scalar</code> container lives up to its name; scalar variables hold
+a single item regardless of the item&rsquo;s complexity.</p>
+<p>Recall that <code>Array</code>s (and <code>Hash</code>es) create <code>Scalar</code> containers for each of
+their individual values. This means that if we nest things, even if we select
+an individual list or hash stored inside the <code>Array</code> (or <code>Hash</code>) and try to
+iterate over it, it&rsquo;d be treated as just a single item:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@things</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">,</span> <span class="nv">%</span><span class="p">(:</span><span class="s">France</span><span class="p">&lt;</span><span class="s">Paris</span><span class="p">&gt;</span><span class="o">,</span> <span class="p">:</span><span class="s">Peru</span><span class="p">&lt;</span><span class="s">Lima</span><span class="p">&gt;);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span>           <span class="c1">#=&gt; «$(2, 4, 6)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">;</span>           <span class="c1">#=&gt; «${:France(&#34;Paris&#34;), :Peru(&#34;Lima&#34;)}␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Scalar␤»</span>
+</span></span></code></pre></div><p>This is a testament to the consistency of <code>Scalar</code> containers. Single items,
+regardless of their structure, are still single items inside <code>Scalar</code>
+containers. For example, this is the behaviour that applies when you try to
+flatten an <code>Array</code>&rsquo;s elements or pass them as an argument to a slurpy parameter:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@things</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">,</span> <span class="nv">%</span><span class="p">(:</span><span class="s">France</span><span class="p">&lt;</span><span class="s">Paris</span><span class="p">&gt;</span><span class="o">,</span> <span class="p">:</span><span class="s">Peru</span><span class="p">&lt;</span><span class="s">Lima</span><span class="p">&gt;);</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@mixed</span> <span class="o">=</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">6</span><span class="o">,</span> <span class="p">:</span><span class="s">France</span><span class="p">&lt;</span><span class="s">Paris</span><span class="p">&gt;</span><span class="o">,</span> <span class="p">:</span><span class="s">Peru</span><span class="p">&lt;</span><span class="s">Lima</span><span class="p">&gt;;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">flat</span> <span class="nv">@things</span><span class="p">;</span>    <span class="c1">#=&gt; «((2, 4, 6), {France =&gt; &#39;Paris&#39;, Peru =&gt; &#39;Lima&#39;})␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">flat</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span> <span class="c1">#=&gt; «(2 4 6)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">flat</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">;</span> <span class="c1">#=&gt; «{France =&gt; &#39;Paris&#39;, Peru =&gt; &#39;Lima&#39;}␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">&amp;p</span> <span class="o">=</span> <span class="k">-&gt;</span> <span class="o">*</span><span class="nv">@args</span> <span class="p">{</span> <span class="nv">@args</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="n">p</span> <span class="nv">@things</span><span class="p">;</span> <span class="c1">#=&gt; «(2 4 6)␤{France =&gt; &#39;Paris&#39;, Peru =&gt; &#39;Lima&#39;}␤»</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="n">p</span> <span class="nv">@mixed</span><span class="p">;</span>  <span class="c1">#=&gt; «2 4 6 France =&gt; Paris Peru =&gt; Lima␤»</span>
+</span></span></code></pre></div><h2 id="binding-vs-assignment">Binding vs Assignment</h2>
+<p>All the following might be quite evident from the discussion thus far but
+it&rsquo;s still worthwhile to summarize it here.</p>
+<p>Whenever you bind a right-hand side entity to a variable, the creation
+of a container (<code>Scalar</code>, <code>Array</code>, etc.) is skipped and the entity is
+bound directly to the variable, regardless of what the variable&rsquo;s
+sigil might suggest. In a binding operation, the only thing a sigil
+gives away about the variable is the type of values that can
+be bound to it. The sigil <code>@</code> implies the <code>Positional</code> role and only values of
+the types (<code>List</code>, <code>Array</code>, <code>Range</code>, and <code>Buf</code>) implementing that role can be
+bound to an <code>@</code>-sigilled variable. On the other hand, the sigil <code>%</code> implies the
+<code>Associative</code> role and only values of the types (<code>Hash</code>, <code>Map</code>, etc.) implementing
+this roles can be bound to a <code>%</code>-sigilled variable. The sigil <code>&amp;</code> implies the
+<code>Callable</code> role. As for <code>$</code>, any value can be bound to a <code>$</code>-sigilled variable
+unless the variable has been constrained further. Sigilless variables
+don&rsquo;t have sigils, and thus their bound values aren&rsquo;t restricted to certain
+types.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># anything goes with $</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$anythinga</span>         <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span>                <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$anythingb</span>         <span class="o">:=</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="p">;</span>             <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$anythingc</span>         <span class="o">:=</span> <span class="p">{</span><span class="s">A</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">,</span> <span class="s">B</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">};</span> <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\anythinga</span>         <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span>                <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\anythingb</span>         <span class="o">:=</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="p">;</span>             <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">\anythingc</span>         <span class="o">:=</span> <span class="p">{</span><span class="s">A</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">,</span> <span class="s">B</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">};</span> <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># only positionals for @</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@only-positionala</span>  <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span>                <span class="c1"># Error</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@only-positionalb</span>  <span class="o">:=</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="p">;</span>             <span class="c1"># OK!</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@only-positionalc</span>  <span class="o">:=</span> <span class="p">{</span><span class="s">A</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">,</span> <span class="s">B</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">};</span> <span class="c1"># Error</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># only associatives for %</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">%only-associativea</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span>                <span class="c1"># Error</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">%only-associativeb</span> <span class="o">:=</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="p">;</span>             <span class="c1"># Error</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">%only-associativec</span> <span class="o">:=</span> <span class="p">{</span><span class="s">A</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="o">,</span> <span class="s">B</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">};</span> <span class="c1"># OK!</span>
+</span></span></code></pre></div><p>On the other hand, an assignment 1) prompts the compiler to create an automatic
+container, which is dictated by the variable&rsquo;s sigil, 2) stores whatever value
+in the container, and ultimately 3) binds the container to the variable.</p>
+<p>Thus, the responsibility of a sigil during an assignment is twofold:</p>
+<ul>
+<li>
+<p>restrict the types of values that can be bound to the variable. For the sigil
+<code>@</code>, this means only values that implement the <code>Positional</code> role can be bound
+to a <code>@</code>-sigilled variable.</p>
+</li>
+<li>
+<p>instruct the compiler to create the respective container for the sigil. For
+the sigil <code>$</code>, this means creating the <code>Scalar</code> container. And for the
+the sigil <code>@</code>,  creating the <code>Array</code> container.</p>
+</li>
+</ul>
+<h2 id="decontainerization">Decontainerization</h2>
+<p>Previously we saw how the <code>Scalar</code> influences the behavior of flattening an
+<code>Array</code>&rsquo;s elements or passsing them as an argument to a slurpy parameter.
+In these cases, we&rsquo;d like to decontainerize our list and hash which is something
+accomplished by using the
+<a href="https://docs.raku.org/language/glossary#index-entry-decont">decont methodop</a> (<code>&lt;&gt;</code>):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@things</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">,</span> <span class="nv">%</span><span class="p">(:</span><span class="s">France</span><span class="p">&lt;</span><span class="s">Paris</span><span class="p">&gt;</span><span class="o">,</span> <span class="p">:</span><span class="s">Peru</span><span class="p">&lt;</span><span class="s">Lima</span><span class="p">&gt;);</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="nb">say</span> <span class="k">for</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">;</span>     <span class="c1">#=&gt; «(2 4 6)␤»</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="nb">say</span> <span class="k">for</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">0</span><span class="o">]&lt;&gt;</span><span class="p">;</span>   <span class="c1">#=&gt; «2␤4␤6␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="nb">say</span> <span class="k">for</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">;</span>     <span class="c1">#=&gt; «{France =&gt; &#39;Paris&#39;, Peru =&gt; &#39;Lima&#39;}␤»</span>
+</span></span><span class="line"><span class="cl"><span class="o">.</span><span class="nb">say</span> <span class="k">for</span> <span class="nv">@things</span><span class="o">[</span><span class="mi">1</span><span class="o">]&lt;&gt;</span><span class="p">;</span>   <span class="c1">#=&gt; «France =&gt; &#39;Paris&#39;␤Peru =&gt; &#39;Lima&#39;␤»</span>
+</span></span></code></pre></div><p>To decontainerize each element of an <code>Array</code>, we can simple hyper the decont
+methodop with the
+<a href="https://docs.raku.org/language/operators#index-entry-hyper_%3C%3C-hyper_%3E%3E-hyper_%C2%AB-hyper_%C2%BB-Hyper_operators">hyper operator</a>
+<code>»</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@things</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">,</span> <span class="nv">%</span><span class="p">(:</span><span class="s">France</span><span class="p">&lt;</span><span class="s">Paris</span><span class="p">&gt;</span><span class="o">,</span> <span class="p">:</span><span class="s">Peru</span><span class="p">&lt;</span><span class="s">Lima</span><span class="p">&gt;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">flat</span> <span class="nv">@things</span><span class="o">»&lt;&gt;</span><span class="p">;</span> <span class="c1">#=&gt; «2 4 6 France =&gt; Paris Peru =&gt; Lima␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">&amp;p</span> <span class="o">=</span> <span class="k">-&gt;</span> <span class="o">*</span><span class="nv">@args</span> <span class="p">{</span> <span class="nv">@args</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="n">p</span> <span class="nv">@things</span><span class="o">»&lt;&gt;</span><span class="p">;</span>    <span class="c1">#=&gt; «2 4 6 France =&gt; Paris Peru =&gt; Lima␤»</span>
+</span></span></code></pre></div><p>Nevertheless we could&rsquo;ve avoided the containerization done by <code>Array</code> to
+our list and hash by simply <em>binding</em> the ourtermost list to the variable.
+<code>List</code>s don&rsquo;t place their items into containers so there would be nothing
+to decontainerize:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">@things</span> <span class="o">:=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">,</span> <span class="nv">%</span><span class="p">(:</span><span class="s">France</span><span class="p">&lt;</span><span class="s">Paris</span><span class="p">&gt;</span><span class="o">,</span> <span class="p">:</span><span class="s">Peru</span><span class="p">&lt;</span><span class="s">Lima</span><span class="p">&gt;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nb">flat</span> <span class="nv">@things</span><span class="p">;</span> <span class="c1">#=&gt; «2 4 6 France =&gt; Paris Peru =&gt; Lima␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">&amp;p</span> <span class="o">=</span> <span class="k">-&gt;</span> <span class="o">*</span><span class="nv">@args</span> <span class="p">{</span> <span class="nv">@args</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="n">p</span> <span class="nv">@things</span><span class="p">;</span>    <span class="c1">#=&gt; «2 4 6 France =&gt; Paris Peru =&gt; Lima␤»</span>
+</span></span></code></pre></div><h2 id="creating-custom-containers">Creating custom containers</h2>
+<p>Custom containers can be created by using the
+<a href="https://docs.raku.org/type/Proxy"><code>Proxy</code></a> class. This class takes two methods
+that allows you to set a hook that executes whenever a value is retrieved from
+a container (<code>FETCH</code>) or when it is set (<code>STORE</code>).</p>
+<p>We create the <code>Proxy</code> object using the constructor method <code>new</code> and supply
+two named arguments for the methods <code>FETCH</code> and <code>STORE</code>:</p>
+<ul>
+<li>
+<p>The <code>FETCH</code> <a href="https://docs.raku.org/type/Callable"><code>Callable</code></a> gets called
+whenever a value is read from the container. The <code>Callable</code> is called with a
+single positional argument: the <code>Proxy</code> object itself.</p>
+</li>
+<li>
+<p>The <code>STORE</code> <a href="https://docs.raku.org/type/Callable"><code>Callable</code></a> gets called
+whenever a value is stored into the container (i.e., when doing an
+assignment). The first positional argument to the <code>Callable</code> is the <code>Proxy</code>
+object itself, and the second argument is the value that was given to be stored.</p>
+</li>
+</ul>
+<p>The following example illustrates how to create a <code>Proxy</code> object that stores
+all even numbers assigned to the variable it&rsquo;s bound to and return them
+when the variable&rsquo;s contents are read. To avoid the <code>Scalar</code> containerization
+of the <code>Proxy</code> object, we bind it to the variable; alternatively we could&rsquo;ve
+used a sigilless variable.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="k">sub</span> <span class="nf">collect-evens</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">my</span> <span class="nv">@evens</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">Proxy</span><span class="o">.</span><span class="nb">new</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">        <span class="s">STORE</span> <span class="o">=&gt;</span> <span class="k">method</span> <span class="p">(</span><span class="nv">$proxy:</span> <span class="nb">UInt</span> \<span class="nb">new</span><span class="p">)</span> <span class="p">{</span> <span class="nv">@evens</span><span class="o">.</span><span class="nb">push</span><span class="p">(</span><span class="nb">new</span><span class="p">)</span> <span class="k">if</span> <span class="nb">new</span> <span class="nv">%%</span> <span class="mi">2</span> <span class="p">}</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s">FETCH</span> <span class="o">=&gt;</span> <span class="k">method</span> <span class="p">(</span><span class="nv">$proxy:</span> <span class="p">)</span> <span class="p">{</span> <span class="nv">@evens</span>  <span class="p">}</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$evens</span> <span class="o">:=</span> <span class="nf">collect-evens</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$evens</span> <span class="o">=</span> <span class="nv">$_</span> <span class="k">for</span> <span class="mi">0</span><span class="o">..</span><span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="p">;</span>           <span class="c1">#=&gt; [0 2 4 6 8 10]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">.</span><span class="nb">VAR</span><span class="p">;</span>       <span class="c1">#=&gt; $[0 2 4 6 8 10]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">say</span> <span class="nv">$evens</span><span class="o">.</span><span class="nb">VAR</span><span class="o">.^</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; Proxy</span>
+</span></span></code></pre></div><h2 id="acknowledgement">Acknowledgement</h2>
+<p>I couldn&rsquo;t have written this without the following write-ups. In fact,
+this article in and of itself is mostly a rehashing of what it&rsquo;s discussed
+in those articles so definitely give them a read.</p>
+<ul>
+<li><a href="https://docs.raku.org/language/containers#Custom_containers">Containers</a></li>
+<li><a href="https://opensource.com/article/18/8/containers-perl-6">Containers in Perl 6</a></li>
+<li><a href="https://perl6advent.wordpress.com/2017/12/02/perl-6-sigils-variables-and-containers/">Day 2 – Perl 6: Sigils, Variables, and Containers</a></li>
+</ul>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="https://uzluisf.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    
+  
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

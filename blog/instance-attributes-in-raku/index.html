@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Luis Uceta">
+<meta name="description" content="In Raku, an object&rsquo;s methods are fully accessible by default but its data (as attributes) cannot be accessed directly outside the class unless explicitly specified. In order to access the data from outside for reading, writing or both, you must make it public somehow. What level of access you allow to an object&rsquo;s data will mostly depend on the way you declare its attributes.
+The $! twigil Let&rsquo;s start with a simple example of a Raku class definition:">
+
+<meta property="og:title" content="Instance Attributes in Raku" />
+<meta property="og:description" content="In Raku, an object&rsquo;s methods are fully accessible by default but its data (as attributes) cannot be accessed directly outside the class unless explicitly specified. In order to access the data from outside for reading, writing or both, you must make it public somehow. What level of access you allow to an object&rsquo;s data will mostly depend on the way you declare its attributes.
+The $! twigil Let&rsquo;s start with a simple example of a Raku class definition:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://uzluisf.github.io/blog/instance-attributes-in-raku/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2019-05-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-05-30T00:00:00+00:00" />
+
+
+<title>
+
+
+     Instance Attributes in Raku 
+
+</title>
+<link rel="canonical" href="https://uzluisf.github.io/blog/instance-attributes-in-raku/">
+
+
+
+
+
+
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+  
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/reset.css?t=2023-04-08%2023%3a46%3a41.70401386%20%2b0000%20UTC%20m%3d%2b0.149552177">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/pygments.css?t=2023-04-08%2023%3a46%3a41.70401386%20%2b0000%20UTC%20m%3d%2b0.149552177">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/main.css?t=2023-04-08%2023%3a46%3a41.70401386%20%2b0000%20UTC%20m%3d%2b0.149552177">
+    
+        <link rel="stylesheet" href="https://uzluisf.github.io/css/override.css?t=2023-04-08%2023%3a46%3a41.70401386%20%2b0000%20UTC%20m%3d%2b0.149552177">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://uzluisf.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                
+                <a href="https://uzluisf.github.io/"><img class="avatar" src="https://uzluisf.github.io/img/profile.png" alt="avatar" srcset="https://uzluisf.github.io/img/profile.png 1x,https://uzluisf.github.io/img/profile-2x.png 2x,https://uzluisf.github.io/img/profile-3x.png 3x,https://uzluisf.github.io/img/profile-4x.png 4x"></a>
+            
+            <a href="https://uzluisf.github.io/"><div class="name">Luis Uceta</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        
+                        <li class="nav-blog"><a href="https://uzluisf.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        
+                        <li class="nav-about"><a href="https://uzluisf.github.io/about/"><span>About</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Instance Attributes in Raku
+
+</div>
+
+                    <div class="initials"><a href="https://uzluisf.github.io/"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Thu May 30 2019 00:00:00 UTC'>May 30, 2019</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>9 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p>In Raku, an object&rsquo;s methods are fully accessible by default but its
+data (as attributes) cannot be accessed directly outside the class unless
+explicitly specified. In order to access the data from outside for reading,
+writing or both, you must make it public somehow. What level of access you allow
+to an object&rsquo;s data will mostly depend on the way you declare its attributes.</p>
+<h2 id="the--twigil">The <code>$!</code> twigil</h2>
+<p>Let&rsquo;s start with a simple example of a Raku class definition:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person01.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$!name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$john</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Suth</span><span class="p">&#39;);</span> <span class="c1"># By default, arguments passed to</span>
+</span></span><span class="line"><span class="cl">                                       <span class="c1"># new must be named (key-value pairs)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$john</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; Error: No such method &#39;name&#39; for invocant</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># of type &#39;Person&#39;.</span>
+</span></span></code></pre></div><p>In this example, you can neither set the value of an attribute
+(e.g., john&rsquo;s name) through the <code>new</code> constructor nor retrieve it since it was
+never set after all. Attributes declared with the
+<a href="https://docs.perl6.org/language/variables#The_!_twigil"><code>$!</code></a> twigil are private
+and can only be accessed from within the class via <code>!</code>. This means that not
+even the default <code>new</code> constructor can be used to set an explicitly
+<code>$!</code>-declared attribute during object construction.</p>
+<p>A straightforward solution would be to handle the attribute initialization
+ourselves by implementing a <a href="https://docs.perl6.org/routine/TWEAK"><code>TWEAK</code></a>
+submethod for our class. In Raku, multiple routines are invoked during the different
+phases of the object construction and <code>TWEAK</code> is the last one of them. I won&rsquo;t go into
+the nitty-gritty details but in short, the <code>TWEAK</code> submethod allows you to
+assign values to instance variables based on the values of other attributes
+or instance variables:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person02.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$!name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">submethod</span> <span class="nb">TWEAK</span><span class="p">(</span> <span class="o">:</span><span class="nv">$name</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$!name</span> <span class="o">=</span> <span class="nv">$name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">=begin</span><span class="sd"> </span><span class="k">comment</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    Our TWEAK implementation involves simply setting up the attribute without 
+</span></span></span><span class="line"><span class="cl"><span class="sd">    any validation/modification of the argument so the previous submethod
+</span></span></span><span class="line"><span class="cl"><span class="sd">    could be reduced to:
+</span></span></span><span class="line"><span class="cl"><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    submethod TWEAK( :$!name ) { }
+</span></span></span><span class="line"><span class="cl"><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    with the attribute being set up right in the TWEAK&#39;s signature. 
+</span></span></span><span class="line"><span class="cl"><span class="sd">    :$!name is the colon-pair version of $!name =&gt; $name.
+</span></span></span><span class="line"><span class="cl"><span class="sd">    </span><span class="k">=end comment</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$john</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">John</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$john</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; Error: No such method &#39;name&#39; for invocant</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># of type &#39;Person&#39;.</span>
+</span></span></code></pre></div><p>Here we&rsquo;ve created a <code>TWEAK</code> submethod that takes a named parameter
+(e.g., <code>:$name</code>) and uses it to set the <code>$!name</code> attribute. Before
+we get to this point, the constructor (<code>new</code> in this instance) supply its
+named arguments to the <a href="https://docs.perl6.org/routine/bless"><code>bless</code></a>
+method which builds up the object and pass
+it to the <a href="https://docs.perl6.org/routine/BUILD"><code>BUILD</code></a> submethod.
+Afterwards, <code>BUILD</code> will either return the object or turns it to the next
+and last phase, the <code>TWEAK</code> submethod, if it exists.</p>
+<p>At this point, we should be able to set the <code>$!name</code> attribute properly at
+object construction but we&rsquo;re far from being able to access it from outside the
+class. We must create an <em>accessor</em> (or <em>getter</em>) method to do so:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person03.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$!name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">submethod</span> <span class="nb">TWEAK</span><span class="p">(</span> <span class="o">:</span><span class="nv">$name</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$!name</span> <span class="o">=</span> <span class="nv">$name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># Our accessor method</span>
+</span></span><span class="line"><span class="cl">    <span class="k">method</span> <span class="nf">get-name</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$!name</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$john</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">John</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$john</span><span class="o">.</span><span class="nf">get-name</span><span class="p">;</span> <span class="c1">#=&gt; «John␤»</span>
+</span></span></code></pre></div><p>At last, we&rsquo;ve been able to</p>
+<ul>
+<li>
+<p>set an attribute during object construction by using the <code>TWEAK</code> submethod and
+handle the initialization of the attribute ourselves. Admittedly, this was a
+simple demonstration but using <code>TWEAK</code> for more complex manipulation of
+attributes at object construction follows the same steps.</p>
+</li>
+<li>
+<p>retrieve the attribute&rsquo;s value after the object&rsquo;s been constructed through a
+method.</p>
+</li>
+</ul>
+<p>This was an educational and insightful exercise. However, the main reason we
+went through all of this was to show how much Raku gives you for free by using
+the constructs presented in the next sections. Let&rsquo;s start off with the
+<code>$.</code> twigil.</p>
+<h2 id="the--twigil-1">The <code>$.</code> twigil</h2>
+<p>Declaring an attribute with the <code>$.</code> twigil does two main things:</p>
+<ul>
+<li>
+<p>allows us to set an attribute at object construction with <code>new</code>, and</p>
+</li>
+<li>
+<p>allows us to access that atribute from outside the class through a method
+created after the attribute&rsquo;s name. This accessor method is created
+by Raku automatically.</p>
+</li>
+</ul>
+<p>Let&rsquo;s look at our updated example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person04.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$alina</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Alina</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># The method is named after its attribute</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$alina</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Alina␤»</span>
+</span></span></code></pre></div><p>As you can see, we did away with all the unnecessary boilerplate for such
+a simple class. It&rsquo;s worth noting that the attribute must still be accessed with
+<code>!</code>. We can think of the <code>$.</code> twigil as creating both a private attribute
+(<code>$!attr</code>) and a read-only accessor method (<code>attr()</code>). In fact, we could access
+an attribute&rsquo;s value inside the class with its accessor but we wouldn&rsquo;t be
+accessing the attribute directly but through a method invocation. Thus,
+depending on your goal, you might be inclined to either access an attribute
+directly or if exists, through its accessor inside the class.</p>
+<h2 id="the-is-rw-trait">The <code>is rw</code> trait</h2>
+<p>In Raku, <a href="https://docs.perl6.org/language/traits">a <em>trait</em> is defined as a compiler hook attached to objects and
+classes that modify their default behavior, functionality or
+representation</a>.</p>
+<p>For simplicity&rsquo;s sake, we&rsquo;ll limit ourselves to the modification of an object&rsquo;s
+attributes but if you want to learn more about the different traits and how to
+implement your own, head over to the
+<a href="https://docs.perl6.org/language/traits">documentation</a>.</p>
+<p>Let’s say we don&rsquo;t only want to read the data from an object, but change it as
+well. As always, one obvious solution is to declare a method that allows us to do so.
+This kind of method that changes an object&rsquo;s attributes is known as
+as a <em>setter</em>, which will usually take an argument and apply it to a particular
+attribute:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person05.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Set the $!name with the provided argument</span>
+</span></span><span class="line"><span class="cl">    <span class="k">method</span> <span class="nf">set-name</span><span class="p">(</span> <span class="nv">$name</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$!name</span> <span class="o">=</span> <span class="nv">$name</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$p1</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Joe</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$p1</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Joe␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Changing the person&#39;s name</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$p1</span><span class="o">.</span><span class="nf">set-name</span><span class="p">(&#39;</span><span class="s1">Alua</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$p1</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Alua␤»</span>
+</span></span></code></pre></div><p>However, by Raku&rsquo;s standards, this is still too much work. Raku wants us to be
+happy and most importantly, lazy. As result, it provides us with the <code>is rw</code> trait to
+tackle this particular problem. This trait marks an attribute as read/write
+as opposed to the default <code>is readonly</code> trait. When <code>is rw</code> is applied to the
+attribute, the default accessor (provided by <code>$.</code>) for the attribute will
+return a writable value. Now let&rsquo;s update our class accordingly:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person06.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.name</span> <span class="k">is</span> <span class="k">rw</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$p1</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Jana</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$p1</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Jana␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Changing the person&#39;s name</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$p1</span><span class="o">.</span><span class="nb">name</span> <span class="o">=</span> <span class="p">&#39;</span><span class="s1">Alua</span><span class="p">&#39;;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$p1</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Alua␤»</span>
+</span></span></code></pre></div><p>And just like that we got rid off our custom setter.</p>
+<p>Remember that a writable value is returned and thus the syntax changes from
+using a method invocation (e.g., <code>$p1.name('Alua')</code>) to assigning directly to
+the object&rsquo;s attribute through a method invocation (e.g., <code>$p1.name = 'Alua'</code>).</p>
+<h2 id="more-traits">More traits</h2>
+<h3 id="the-is-default-trait">The <code>is default</code> trait</h3>
+<p>By default, assigning <code>Nil</code> to a read/write attribute will set it back to <code>Any</code>.
+However, we might be interested in using a more meaningful default value. For
+instance, for our <code>Person</code> class, we could use <code>John</code> as the person&rsquo;s default
+name:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person07.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.name</span> <span class="k">is</span> <span class="k">default</span><span class="p">(&#39;</span><span class="s1">John</span><span class="p">&#39;)</span> <span class="k">is</span> <span class="k">rw</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Attribute not set at construction so it gets its default value</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$p1</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$p1</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «John␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Setting the attribute</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$p2</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Ruth</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$p2</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Ruth␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Reverting it back to its default value</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$p2</span><span class="o">.</span><span class="nb">name</span> <span class="o">=</span> <span class="nb">Nil</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$p2</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «John␤»</span>
+</span></span></code></pre></div><h3 id="the-is-required-trait">The <code>is required</code> trait</h3>
+<p>As we saw in the previous example (e.g., <code>my $p1 = Person.new();</code>), we didn&rsquo;t
+need to provide the attribute&rsquo;s value right away during the object construction.
+Unlike what you might think, this isn&rsquo;t due to our use of the <code>is default</code> trait.
+In fact, attributes don&rsquo;t require to be set during object construction because
+the default <code>new</code> constructor expects named parameters and they&rsquo;re optional
+by default. Certainly, the attributes won&rsquo;t have their values if none are
+provided but the compiler won&rsquo;t yell at you for not supplying them. This is
+where the <code>is required</code> trait comes handy, which will mark the attribute as to
+be filled with a value when the object is instantiated; failing to do so
+will cause a runtime error:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person08.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.name</span> <span class="k">is</span> <span class="k">required</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># This works fine...</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$p1</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span><span class="s">name</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Rob</span><span class="p">&#39;);</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$p1</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span> <span class="c1">#=&gt; «Rob␤»</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$p2</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">();</span> <span class="c1"># Runtime error: The attribute &#39;$!name&#39; is required,</span>
+</span></span><span class="line"><span class="cl">                       <span class="c1"># but you did not provide a value for it.</span>
+</span></span></code></pre></div><p>As you may have figured out, using the <code>is default</code> and <code>is required</code>
+traits in conjuntion will cause <code>is default</code> not to take effect since doing
+so would mean the attribute has a default value and thus, its initialization at
+object construction isn&rsquo;t neccessary.</p>
+<h3 id="the-is-deprecated-trait">The <code>is DEPRECATED</code> trait</h3>
+<p>There some instances in which some attributes might not be useful anymore for
+client code but you might want to keep them around for some reason. In Raku,
+you can do that and still let the client know that such attributes has been
+deprecated. For this, you can use the <code>is DEPRECATED</code> trait to mark an attribute
+as deprecated. You can also provide a message telling the client what to use
+instead. Let&rsquo;s add more specific attributes to our <code>Person</code> class and
+discourage our client from using the <code>$.name</code> attribute:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># person09.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Person</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.name</span> <span class="k">is</span> <span class="k">DEPRECATED</span><span class="p">(&#34;</span><span class="s2">&#39;firstname&#39; and &#39;lastname&#39;</span><span class="p">&#34;);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.firstname</span> <span class="k">is</span> <span class="k">required</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$.lastname</span> <span class="k">is</span> <span class="k">required</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Initialization won&#39;t trigger the warning...</span>
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="nv">$rf</span> <span class="o">=</span> <span class="n">Person</span><span class="o">.</span><span class="nb">new</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">name</span>      <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Richard Feynman</span><span class="p">&#39;</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">firstname</span> <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Richard</span><span class="p">&#39;</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">lastname</span>  <span class="o">=&gt;</span> <span class="p">&#39;</span><span class="s1">Feynman</span><span class="p">&#39;</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># ...the usage will do, which will send it to STDERR.</span>
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$rf</span><span class="o">.</span><span class="nb">name</span><span class="p">;</span>
+</span></span></code></pre></div><p>After the program is run, the following message is printed:</p>
+<pre tabindex="0"><code class="language-stderr" data-lang="stderr">Richard Feynman
+Saw 1 occurrence of deprecated code.
+================================================================================
+Method name (from Person) seen at:
+  person09.p6, line 16
+Please use &#39;firstname&#39; and &#39;lastname&#39; instead.
+--------------------------------------------------------------------------------
+Please contact the author to have these occurrences of deprecated code
+adapted, so that this message will disappear!
+</code></pre><h2 id="private-methods">Private methods</h2>
+<p>At the beginning, we mentioned that a Raku object&rsquo;s methods are public.
+However, we can also declare methods as private, in which case they can only
+be invoked from within the class. A private method is declared just like a
+public method, however the method&rsquo;s name is prepended with <code>!</code>. They&rsquo;re quite
+useful for breaking tasks into smaller subtasks and restrict their actions
+to other methods inside the class. Let&rsquo;s use a different example to show
+them off:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-raku" data-lang="raku"><span class="line"><span class="cl"><span class="c1"># sodamach.p6</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">SodaMachine</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nb">Int</span> <span class="nv">$.coke-cans</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nb">Int</span> <span class="nv">$.sprite-cans</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nb">Int</span> <span class="nv">$.fanta-cans</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">has</span> <span class="nv">$!cost-per-can</span> <span class="o">=</span> <span class="mf">1.15</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Public method body using the private method</span>
+</span></span><span class="line"><span class="cl">    <span class="k">method</span> <span class="nf">get-total-cost</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">       <span class="nb">self</span><span class="o">!</span><span class="nf">get-total-cans</span> <span class="o">*</span> <span class="nv">$!cost-per-can</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Notice the ! in front of the method</span>
+</span></span><span class="line"><span class="cl">    <span class="k">method</span> <span class="nf">!get-total-cans</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$!coke-cans</span> <span class="o">+</span> <span class="nv">$!sprite-cans</span> <span class="o">+</span> <span class="nv">$!fanta-cans</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">my</span> <span class="n">SodaMachine</span> <span class="nv">$machine</span> <span class="o">.=</span> <span class="nb">new</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="s">coke-cans</span>   <span class="o">=&gt;</span> <span class="mi">5</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">sprite-cans</span> <span class="o">=&gt;</span> <span class="mi">12</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s">fanta-cans</span>  <span class="o">=&gt;</span> <span class="mi">8</span>
+</span></span><span class="line"><span class="cl"><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$machine</span><span class="o">.</span><span class="nf">get-total-cost</span><span class="p">;</span> <span class="c1">#=&gt; 28.75</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">put</span> <span class="nv">$machine</span><span class="o">.</span><span class="nf">get-total-cans</span><span class="p">;</span> <span class="c1">#=&gt; Error: No such method &#39;get-total-cans&#39;</span>
+</span></span><span class="line"><span class="cl">                             <span class="c1"># for invocant of type &#39;SodaMachine&#39;.</span>
+</span></span></code></pre></div><p>As you can see, private methods are called with a <code>!</code> on the invoking object
+(<code>self</code>) inside the class.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>As we evidenced in this post, Raku provides you with several ways of declaring
+attributes and tailor them to your specific needs. From objects that hide
+everything from the outside world to objects that are more charitable with
+their data, everything is up for the taking in Raku.</p>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="https://uzluisf.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    
+  
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

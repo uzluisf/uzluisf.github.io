@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Luis Uceta">
+<meta name="description" content="Note: In October 2019, Perl 6 was renamed to Raku. Whenever you come across Perl 6, replace it with Raku. Learn more about the path to Raku.
+sub MAIN In Perl 6, the parsing of command line arguments is done with the MAIN subroutine which is a special subroutine that parses command line arguments based on their signatures. As with other subroutines, you can have named and positional parameters, optional (and required) parameters, multiple dispatch, etc.">
+
+<meta property="og:title" content="Command Line Arguments in Perl 6" />
+<meta property="og:description" content="Note: In October 2019, Perl 6 was renamed to Raku. Whenever you come across Perl 6, replace it with Raku. Learn more about the path to Raku.
+sub MAIN In Perl 6, the parsing of command line arguments is done with the MAIN subroutine which is a special subroutine that parses command line arguments based on their signatures. As with other subroutines, you can have named and positional parameters, optional (and required) parameters, multiple dispatch, etc." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://uzluisf.github.io/blog/command-line-arguments-in-perl-6/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2018-07-31T00:00:00+00:00" />
+<meta property="article:modified_time" content="2018-07-31T00:00:00+00:00" />
+
+
+<title>
+
+
+     Command Line Arguments in Perl 6 
+
+</title>
+<link rel="canonical" href="https://uzluisf.github.io/blog/command-line-arguments-in-perl-6/">
+
+
+
+
+
+
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+  
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/reset.css?t=2023-04-08%2023%3a46%3a41.640976696%20%2b0000%20UTC%20m%3d%2b0.086515013">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/pygments.css?t=2023-04-08%2023%3a46%3a41.640976696%20%2b0000%20UTC%20m%3d%2b0.086515013">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/main.css?t=2023-04-08%2023%3a46%3a41.640976696%20%2b0000%20UTC%20m%3d%2b0.086515013">
+    
+        <link rel="stylesheet" href="https://uzluisf.github.io/css/override.css?t=2023-04-08%2023%3a46%3a41.640976696%20%2b0000%20UTC%20m%3d%2b0.086515013">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://uzluisf.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                
+                <a href="https://uzluisf.github.io/"><img class="avatar" src="https://uzluisf.github.io/img/profile.png" alt="avatar" srcset="https://uzluisf.github.io/img/profile.png 1x,https://uzluisf.github.io/img/profile-2x.png 2x,https://uzluisf.github.io/img/profile-3x.png 3x,https://uzluisf.github.io/img/profile-4x.png 4x"></a>
+            
+            <a href="https://uzluisf.github.io/"><div class="name">Luis Uceta</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        
+                        <li class="nav-blog"><a href="https://uzluisf.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        
+                        <li class="nav-about"><a href="https://uzluisf.github.io/about/"><span>About</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Command Line Arguments in Perl 6
+
+</div>
+
+                    <div class="initials"><a href="https://uzluisf.github.io/"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Tue Jul 31 2018 00:00:00 UTC'>Jul 31, 2018</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>9 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p><strong>Note:</strong> In October 2019, Perl 6 was renamed to Raku. Whenever you
+come across Perl 6, replace it with Raku. Learn more about the
+<a href="https://github.com/Raku/problem-solving/blob/master/solutions/language/Path-to-Raku.md">path to Raku</a>.</p>
+<h2 id="sub-main">sub MAIN</h2>
+<p>In Perl 6, the parsing of command line arguments is done with the <code>MAIN</code>
+subroutine which is a special subroutine that parses command line arguments
+based on their signatures. As with other subroutines, you can have named and
+positional parameters, optional (and required) parameters, multiple dispatch,
+etc. with it.</p>
+<p>With the definition of a <code>MAIN</code> subroutine, a <code>USAGE</code> subroutine is
+automatically generated by the compiler. This subroutine can be modified to
+return a customized usage message. All command line arguments are also available
+in the special variable <code>@*ARGS</code>, which can be mutated before being processed by
+<code>MAIN</code>.</p>
+<h2 id="named-and-positional-parameters">Named and positional parameters</h2>
+<h4 id="named-parameters">Named parameters</h4>
+<p>Let&rsquo;s begin with a simple program (save as <code>prog.p6</code>):</p>
+<pre tabindex="0"><code>use v6;
+
+sub MAIN(
+    Str :$name = &#39;John&#39;, 
+    Str :$last-name = &#39;Doe&#39;,
+) {
+
+    my $formatted-name = &#34;$name.tc() $last-name.tc()&#34;;
+    say $formatted-name;
+}
+</code></pre><p>In this <code>MAIN</code> sub, we have created two named parameters, <code>$name</code> and
+<code>$last-name</code> with type constraints (<code>Str</code>), by prepending <code>:</code> to each variable in
+the signature of the subroutine. These parameters also have default values which
+is achieved by assigning a value to the parameter. In this case, we&rsquo;ve set
+<code>$name</code> to the default value &lsquo;John&rsquo; and <code>$last-name</code> to &lsquo;Doe&rsquo;. If the command
+line arguments match the <code>MAIN</code> signature when <code>prog.p6</code> is executed, then a
+formatted full name will print out:</p>
+<pre tabindex="0"><code>$ perl6 prog.p6
+John Doe
+$ perl6 prog.p6 --name=&#39;carl&#39; --last-name=&#39;sagan&#39;
+Carl Sagan
+$ perl6 prog.p6 --last-name=&#39;sagan&#39; --name=&#39;carl&#39;
+Carl Sagan
+</code></pre><p>As you can see, named parameters can be passed in whichever order you want.</p>
+<p>If no <code>MAIN</code> signature is matched, then we get a usage message:</p>
+<pre tabindex="0"><code> $ p6 prog.p6 --name=&#39;Carl&#39; --last-name=&#39;Sagan&#39; --career=&#39;astronomer&#39;
+ prog.p6 [--name=&lt;Str&gt;] [--last-name=&lt;Str&gt;]
+</code></pre><h4 id="positional-parameters">Positional parameters</h4>
+<p>If we wanted to use positional parameters instead, we could redefine the
+subroutine&rsquo;s signature to parse only positional parameters. Like the previous
+version, we&rsquo;ll have default values for the parameters but these parameters are
+now positional and must be supplied in the order defined by the signature:</p>
+<pre tabindex="0"><code>use v6;
+
+sub MAIN(
+    Str $name = &#39;John&#39;,       # No colon(:) in the variable 
+    Str $last-name = &#39;Doe&#39;,   # No colon(:) in the variable 
+) {
+
+    my $formatted-name = &#34;$name.tc() $last-name.tc()&#34;;
+    say $formatted-name;
+}
+</code></pre><p>Executing the <code>prog.p6</code> with a matching signature will print the following outputs:</p>
+<pre tabindex="0"><code>$ perl6 prog.p6
+John Doe
+
+$ perl6 prog.p6 carl sagan
+Carl Sagan
+</code></pre><p>And without one, it gives us the following usage message:</p>
+<pre tabindex="0"><code>$ perl6 prog.p6 carl sagan astronomer
+prog.p6 [&lt;name&gt;] [&lt;last-name&gt;]
+</code></pre><h4 id="multiple-dispatch">Multiple dispatch</h4>
+<p>We might prefer to use both named and positional parameters in our small
+program. As we mentioned before, we can make use of multiple dispatch (several
+subroutines with the same name but with different signatures) to declare
+multiple <code>MAIN</code> subroutines with their own signatures. To do this, each
+candidate is declared with the <code>multi</code> keyword instead of <code>sub</code>:</p>
+<pre tabindex="0"><code>use v6;
+
+multi MAIN(
+    Str :$name = &#39;John&#39;, 
+    Str :$last-name = &#39;Doe&#39;,
+) {
+    my $formatted-name = &#34;$name.tc() $last-name.tc()&#34;;
+    say $formatted-name;
+}
+
+multi MAIN(
+    Str $name = &#39;John&#39;, 
+    Str $last-name = &#39;Doe&#39;,
+) {
+
+    my $formatted-name = &#34;$name.tc() $last-name.tc()&#34;;
+    say $formatted-name;
+}
+</code></pre><p>Both <code>MAIN</code> subroutines look pretty much alike but they have different
+signatures which describe the expected command line arguments.</p>
+<p>If we execute <code>prog.p6</code> with command line arguments that match any of the <code>MAIN</code>
+signatures, we&rsquo;ll get our formatted full name:</p>
+<pre tabindex="0"><code>$ p6 prog.p6 --name=&#39;ada&#39; --last-name=&#39;lovelace&#39;
+Ada Lovelace
+
+$ p6 prog.p6 marcus aurelius
+Marcus Aurelius
+</code></pre><p>And without a matching signature, we&rsquo;ll get a useful usage message detailing the
+possible signatures for our <code>MAIN</code> subroutine:</p>
+<pre tabindex="0"><code>$ p6 prog.p6 --name=&#39;Ada&#39; --last-name=&#39;Lovelace&#39; --title=&#39;Ms&#39;
+Usage:
+  prog.p6 [--name=&lt;Str&gt;] [--last-name=&lt;Str&gt;] 
+  prog.p6 [&lt;name&gt;] [&lt;last-name&gt;] 
+</code></pre><h4 id="combining-named-and-positional-parameters">Combining named and positional parameters</h4>
+<p>Defining different signatures to tackle different command line arguments, named
+and positional parameters in our case, is fine. But, what if you wanted to mix
+named and positional parameters in a single <code>MAIN</code> signature? This can be done quite
+easily, although the positional parameters must be defined before the named ones.</p>
+<p>Let&rsquo;s update the latest iteration of our simple program <code>prog.p6</code> by adding a
+positional parameter to the first <code>multi</code> subroutine:</p>
+<pre tabindex="0"><code>use v6;
+
+multi MAIN(
+    Str $title = &#39;Mr&#39;,      # Our positional parameter defined before named ones
+    Str :$name = &#39;John&#39;, 
+    Str :$last-name = &#39;Doe&#39;,
+) {
+
+    my $formatted-name = &#34;$title.tc() $name.tc() $last-name.tc()&#34;;
+    say $formatted-name;
+}
+
+multi MAIN(
+    Str $title,
+    Str $name = &#39;John&#39;, 
+    Str $last-name = &#39;Doe&#39;,
+) {
+
+    my $formatted-name = &#34;$title.tc() $name.tc() $last-name.tc()&#34;;
+    say $formatted-name;
+}
+</code></pre><h2 id="optional-and-required-parameters">Optional and required parameters</h2>
+<p><strong>Named parameters are optional by default</strong>. Nonetheless, they can be marked as
+required by appending the respective lexical variable with <code>!</code>. For example,
+<code>MAIN( :$first, :$second, :$operator ){ ... }</code> wouldn&rsquo;t print a usage message if
+called without some command line arguments but <code>MAIN( :$first!, :$second!, :$operator! ){ ... }</code> would do given that the parameters are now required and
+the caller must pass the necessary arguments.</p>
+<p>On the other hand, <strong>positional parameters are required by default</strong> but can be
+marked as optional by appending the respective lexical variable with <code>?</code>. For
+example, <code>MAIN( $first, $second, $operator ){ ... }</code> would print a usage message
+if called without command line arguments but <code>MAIN( $first?, $second?, $operator? ){ ... }</code> wouldn&rsquo;t due to the parameters being now optional.</p>
+<p>Positional parameters can also be defined as optional by setting default values
+like how we did with <code>$name</code> and <code>$last-name</code> in
+<code>multi MAIN( $title, $name = 'John', $last-name = 'Doe' ) { ... }</code>.</p>
+<h2 id="aliases-or-alternate-named-parameters">Aliases or alternate named parameters</h2>
+<p>Named parameters and their aliases are provided by the use of the colon-pair
+syntax (<code>:</code>). The presence of the colon <code>:</code> will decide whether we are creating
+a new named parameter or not.</p>
+<p>Let&rsquo;s modify the first <code>multi</code> in <code>prog.p6</code> to include some aliases:</p>
+<pre tabindex="0"><code>use v6;
+
+multi MAIN(
+    Str $title = &#39;Mr&#39;,
+    Str :$name = &#39;John&#39;, 
+    Str :last-name($surname) = &#39;Doe&#39;,
+    Bool :p(:$print),
+) {
+
+    my $formatted-name = &#34;$title.tc() $name.tc() $surname.tc()&#34;;
+    
+    if $print {
+        say $formatted-name;
+    }
+}
+</code></pre><p>This <code>MAIN</code> is defining two kind of aliases:</p>
+<ul>
+<li><code>:last-name($surname)</code> only aliases the content passed to the command line
+parameter <code>--last-name</code> to the variable <code>$surname</code> (notice the lack of <code>:</code>).
+This means <code>$surname</code> will be just the name of the aliased variable which
+does not create a new named parameter:</li>
+</ul>
+<pre tabindex="0"><code>$ p6 prog.p6 --name=&#39;alan&#39; --last-name=&#39;turing&#39; -p
+Alan Turing
+
+$ p6 prog.p6 --name=&#39;alan&#39; --surname=&#39;turing&#39;
+Usage:
+  pos-named.p6 [--name=&lt;Str&gt;] [--last-name=&lt;Str&gt;] [-p|--print] [&lt;title&gt;]
+</code></pre><ul>
+<li><code>:$print</code> will not only be the name of the aliased variable, but also a new
+named parameter, alongside <code>:p</code>:</li>
+</ul>
+<pre tabindex="0"><code>$ p6 prog.p6 --name=&#39;alan&#39; --last-name=&#39;turing&#39;
+
+$ p6 prog.p6 --name=&#39;alan&#39; --last-name=&#39;turing&#39; -p
+Alan Turing
+
+$ p6 prog.p6 --name=&#39;alan&#39; --last-name=&#39;turing&#39; -print
+Alan Turing
+</code></pre><p>As you may have noticed, the flag <code>-p</code> (or <code>-print</code>) must be now specified if we
+want to print the person&rsquo;s formatted full name. This is because the type <code>Bool</code> makes
+<code>$print</code> a binary flag which is <code>False</code> if absent. If called, then the flag is
+<code>True</code>, making the execution of our simple <code>if $print { ... }</code> statement
+possible.</p>
+<p>Using aliases is an easy way to create long form and short form option names for
+parameters. We could further modify the first <code>multi</code> in <code>prog.p6</code> in order to
+provide a short form option name for <code>--name</code> and <code>--last-name</code>:</p>
+<pre tabindex="0"><code>use v6;
+
+multi MAIN(
+    Str $title = &#39;Mr&#39;,
+    Str :n(:$name) = &#39;John&#39;, 
+    Str :l(:last-name($surname)) = &#39;Doe&#39;,
+    Bool :p(:$print),
+) {
+
+    my $formatted-name = &#34;$title.tc() $name.tc() $surname.tc()&#34;;
+    
+    if $print {
+        say $formatted-name;
+    }
+}
+</code></pre><p>By executing <code>prog.p6</code> with different form options, we get:</p>
+<pre tabindex="0"><code>p6 prog.p6 --name=&#39;alan&#39; --last-name=&#39;turing&#39; -print
+Mr. Alan Turing
+
+p6 prog.p6 -n=&#39;grace&#39; -l=&#39;hopper&#39; -p &#39;Ms&#39;
+Ms. Grace Hopper
+</code></pre><p>And without a matching signature, we get our usage message:</p>
+<pre tabindex="0"><code>p6 prog.p6 -n=&#39;alan&#39; -l=&#39;turing&#39; -p --career=&#39;mathematician&#39;
+Usage:
+  prog.p6 [-n|--name=&lt;Str&gt;] [-l|--last-name=&lt;Str&gt;] [-p|--print] [&lt;title&gt;] 
+  prog.p6 [&lt;title&gt;] [&lt;name&gt;] [&lt;last-name&gt;]
+</code></pre><h2 id="sub-usage">Sub USAGE</h2>
+<p>Without a matching signature, the latest iteration of our small program <code>prog.p6</code>
+would print the following usage message:</p>
+<pre tabindex="0"><code>Usage:
+  prog.p6 [-n|--name=&lt;Str&gt;] [-l|--last-name=&lt;Str&gt;] [-p|--print] [&lt;title&gt;] 
+  prog.p6 &lt;title&gt; [&lt;name&gt;] [&lt;last-name&gt;] 
+</code></pre><p>which is due to the <code>USAGE</code> subroutine being called automatically when no
+matching signature is supplied to the <code>MAIN</code> subroutine. If no such subroutine is
+found, the compiler will output a default generated usage message which means
+that we can define it to provide a more detailed (if that&rsquo;s we want!) usage message.</p>
+<p>This is <code>prog.p6</code> with a modified <code>USAGE</code> sub:</p>
+<pre tabindex="0"><code>use v6;
+
+multi MAIN(
+    Str $title = &#39;Mr&#39;,
+    Str :n(:$name) = &#39;John&#39;, 
+    Str :l(:last-name($surname)) = &#39;Doe&#39;,
+    Bool :p(:$print),
+) {
+
+    my $formatted-name = &#34;$title.tc() $name.tc() $surname.tc()&#34;;
+    
+    if $print {
+        say $formatted-name;
+    }
+}
+
+multi MAIN(
+    Str $title = &#39;Mr&#39;,
+    Str $name = &#39;John&#39;, 
+    Str $last-name = &#39;Doe&#39;,
+) {
+
+    my $formatted-name = &#34;$title.tc() $name.tc() $last-name.tc()&#34;;
+
+    say $formatted-name;
+}
+
+sub USAGE() {
+print Q:c:to/END/;
+Usage:
+  {$*PROGRAM-NAME} [-n|--name=&lt;Str&gt;] [-l|--last-name=&lt;Str&gt;] [-p|--print] [&lt;title&gt;] 
+  {$*PROGRAM-NAME} [&lt;title&gt;] [&lt;name&gt;] [&lt;last-name&gt;] 
+
+optional arguments:
+  -h, --help                     show this help message and exit
+  -n=PERSON_NAME, --name=PERSON_NAME
+                                 specify person&#39;s name
+  -l=PERSON_LAST_NAME, --last-name=PERSON_LAST_NAME
+                                 specify person&#39;s last name
+  -p , --print                   print person&#39;s full name
+  &lt;title&gt;                        specify person&#39;s title (&#39;Mr&#39; by default)
+
+  Examples:
+    {$*PROGRAM-NAME} --name=&#39;richard&#39; --last-name=&#39;feynman&#39; -p
+    {$*PROGRAM-NAME} --name=&#39;sophie&#39; --last-name=&#39;germain&#39; -p &#39;Ms&#39;
+    {$*PROGRAM-NAME} &#39;leonhard&#39; &#39;euler&#39;
+END
+}
+</code></pre><p>Notice the mention of the <code>-h</code> (and <code>--help</code>) flags in the
+usage message which we didn&rsquo;t need to explicitly define because they
+are automatically generated. If we now execute <code>prog.p6</code> with the <code>--help</code> (or <code>-h</code>)
+flag or provide no matching signature, we get the new usage message:</p>
+<pre tabindex="0"><code>Usage:
+  prog.p6 [-n|--name=&lt;Str&gt;] [-l|--last-name=&lt;Str&gt;] [-p|--print] [&lt;title&gt;] 
+  prog.p6 [&lt;title&gt;] [&lt;name&gt;] [&lt;last-name&gt;] 
+
+optional arguments:
+  -h, --help                     show this help message and exit
+  -n=PERSON_NAME, --name=PERSON_NAME
+                                 specify person&#39;s name
+  -l=PERSON_LAST_NAME, --last-name=PERSON_LAST_NAME
+                                 specify person&#39;s last name
+  -p , --print                   print person&#39;s full name
+  &lt;title&gt;                        specify person&#39;s title (&#39;Mr&#39; by default)
+
+  Examples:
+   prog.p6 --name=&#39;richard&#39; --last-name=&#39;feynman&#39; -p
+   prog.p6 --name=&#39;sophie&#39; --last-name=&#39;germain&#39; -p &#39;Ms&#39;
+   prog.p6 &#39;leonhard&#39; &#39;euler&#39;
+</code></pre><h2 id="conclusion">Conclusion</h2>
+<p>This is certainly just a superficial look at the <code>MAIN</code> and <code>USAGE</code> subroutines.
+As it is in Perl 6, there are always more things than meets the eye. For example if
+you want named arguments to be placed anywhere in the command line (even after
+positional parameters), you could modify the hash <code>%*SUB-MAIN-OPTS</code> to allow
+this behavior. If you want to go into more details, I&rsquo;ve provided
+some useful links right below.</p>
+<hr>
+<p><strong>Also see</strong>:</p>
+<ul>
+<li><a href="https://docs.perl6.org/language/functions">More about subroutines, blocks, signatures, return values, MAIN sub, etc.</a></li>
+<li><a href="https://perl6advent.wordpress.com/2010/12/02/day-2-interacting-with-the-command-line-with-main-subs/">Interacting with the command line with MAIN subs</a></li>
+<li><a href="http://www.jnthn.net/papers/2010-osdc.fr-signatures.pdf">Perl 6 Signatures - Jonathan Worthington</a></li>
+<li><a href="http://linuxtot.com/parsing-command-line-arguments-in-perl-6/">Parsing Command Line Arguments in Perl 6</a></li>
+<li><a href="http://perl6maven.com/parsing-command-line-arguments-perl6">Parsing command line arguments in Perl 6</a></li>
+<li><a href="https://stackoverflow.com/a/29704107">How do I parse and validate command line arguments in Perl 6?</a></li>
+</ul>
+
+                <br>
+                
+                <p class="back-to-posts"><a href="https://uzluisf.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    
+  
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

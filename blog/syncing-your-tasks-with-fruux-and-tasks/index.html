@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Luis Uceta">
+<meta name="description" content="Recently I came across Tasks, an Android app that lets you manage tasks (ta-da!). While I&rsquo;ve been using the app to write down simple tasks, I&rsquo;ve always wished that the tasks could be synced. Thus I was quite surprised when I learned that the app is compatible with CalDAV servers and thus allows you to sync your tasks with any service that uses CalDav, an open standard that provides client access to schedule information on a remote server.">
+
+<meta property="og:title" content="Syncing Your Tasks with fruux and Tasks" />
+<meta property="og:description" content="Recently I came across Tasks, an Android app that lets you manage tasks (ta-da!). While I&rsquo;ve been using the app to write down simple tasks, I&rsquo;ve always wished that the tasks could be synced. Thus I was quite surprised when I learned that the app is compatible with CalDAV servers and thus allows you to sync your tasks with any service that uses CalDav, an open standard that provides client access to schedule information on a remote server." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://uzluisf.github.io/blog/syncing-your-tasks-with-fruux-and-tasks/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2019-03-30T00:00:00+00:00" />
+<meta property="article:modified_time" content="2019-03-30T00:00:00+00:00" />
+
+
+<title>
+
+
+     Syncing Your Tasks with fruux and Tasks 
+
+</title>
+<link rel="canonical" href="https://uzluisf.github.io/blog/syncing-your-tasks-with-fruux-and-tasks/">
+
+
+
+
+
+
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+  
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/reset.css?t=2023-04-08%2023%3a46%3a41.64420183%20%2b0000%20UTC%20m%3d%2b0.089740247">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/pygments.css?t=2023-04-08%2023%3a46%3a41.64420183%20%2b0000%20UTC%20m%3d%2b0.089740247">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/main.css?t=2023-04-08%2023%3a46%3a41.64420183%20%2b0000%20UTC%20m%3d%2b0.089740247">
+    
+        <link rel="stylesheet" href="https://uzluisf.github.io/css/override.css?t=2023-04-08%2023%3a46%3a41.64420183%20%2b0000%20UTC%20m%3d%2b0.089740247">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://uzluisf.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                
+                <a href="https://uzluisf.github.io/"><img class="avatar" src="https://uzluisf.github.io/img/profile.png" alt="avatar" srcset="https://uzluisf.github.io/img/profile.png 1x,https://uzluisf.github.io/img/profile-2x.png 2x,https://uzluisf.github.io/img/profile-3x.png 3x,https://uzluisf.github.io/img/profile-4x.png 4x"></a>
+            
+            <a href="https://uzluisf.github.io/"><div class="name">Luis Uceta</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        
+                        <li class="nav-blog"><a href="https://uzluisf.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        
+                        <li class="nav-about"><a href="https://uzluisf.github.io/about/"><span>About</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Syncing Your Tasks with fruux and Tasks
+
+</div>
+
+                    <div class="initials"><a href="https://uzluisf.github.io/"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Sat Mar 30 2019 00:00:00 UTC'>Mar 30, 2019</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>2 minutes read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p>Recently I came across <a href="https://tasks.org/">Tasks</a>, an Android app that lets you
+manage tasks (<em>ta-da!</em>). While I&rsquo;ve been using the app to write down simple
+tasks, I&rsquo;ve always wished that the tasks could be synced. Thus I was quite
+surprised when I learned that the app is compatible with CalDAV servers and
+thus allows you to sync your tasks with any service that uses CalDav, an open
+standard that provides client access to schedule information on a remote
+server. Although CalDav is mainly used to synchronize calendars, the protocol
+also includes a specification for to-do lists entries.</p>
+<p>For its part, Tasks allows you to synchronize your to-do lists entries with a
+variety of proprietary or open source calendar servers. Among these third-party
+services is <a href="https://fruux.com/">fruux</a> which provides synchronization of your
+contacts, calendars and tasks across devices. As of now, I&rsquo;m using fruux&rsquo;s
+Basic plan, which is free and offers unlimited contacts, calendars and tasks
+and synchronization with up to 2 devices. fruux has its own Android app, which
+albeit simple, I&rsquo;ve found it to be quite cumbersome which is the reason I decided
+to use Tasks instead. The process to set up a fruux account with Tasks is
+quite simple. This is how I did it:</p>
+<ol>
+<li>
+<p><a href="https://fruux.com/account/login/">Sign in</a> to your fruux account. Now
+you must go to the <a href="https://fruux.com/sync/">Sync</a> section and add a new
+device. By default there&rsquo;s a <code>no name</code> device that I think it&rsquo;s created when
+you first use any of the fruux apps. However, this device might not be useful
+to sync anything since it has no custom password.</p>
+</li>
+<li>
+<p>After adding the device, a username and a password will be automatically
+generated which we&rsquo;ll use to add our account in Tasks. It&rsquo;s worth mentioning
+that the password is soon forgotten by fruux servers so keep it at hand until
+you&rsquo;ve set up the account.</p>
+</li>
+<li>
+<p>In the Tasks app, go to <code>Settings » Synchronization » Add account</code>. Once
+there you must enter a name, a url and the username-password pair which was
+generated for us when a new device was added to the fruux account. The url
+part was quite tricky for me since I thought entering <code>https://fruux.com/</code>
+would do the job. Instead you must use <code>https://dav.fruux.com</code> as the base
+url.</p>
+</li>
+<li>
+<p>If you entered everything currently, your fruux account&rsquo;s tasks lists
+should now be showing in the Task app.</p>
+</li>
+</ol>
+<p>Should you need additional information, the following links might be of help:</p>
+<ul>
+<li>
+<p><a href="https://tasks.org/docs/caldav_intro.html">https://tasks.org/docs/caldav_intro.html</a></p>
+</li>
+<li>
+<p><a href="http://support.fruux.com/faq/how-to-set-up-sync-with-my-device-or-app">http://support.fruux.com/faq/how-to-set-up-sync-with-my-device-or-app</a></p>
+</li>
+<li>
+<p><a href="https://www.davx5.com/tested-with/fruux">https://www.davx5.com/tested-with/fruux</a></p>
+</li>
+</ul>
+<p><em>Alright&hellip; see ya!</em></p>
+
+                <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="https://uzluisf.github.io/tags/tasks">tasks</a>
+                  
+                    <a href="https://uzluisf.github.io/tags/fruxx">fruxx</a>
+                  
+                    <a href="https://uzluisf.github.io/tags/caldav">CalDav</a>
+                  
+                  </div>
+                  <br />
+                
+                <p class="back-to-posts"><a href="https://uzluisf.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    
+  
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+
