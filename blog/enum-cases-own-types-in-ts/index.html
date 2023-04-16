@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="author" content="Luis Uceta">
+<meta name="description" content="The other day I was adding a feature flag to a page within a React codebase. The relevant piece of code looked as follows:
+enum Light { string Green = &#39;Green&#39;, string Yellow = &#39;Yellow&#39;, string Red = &#39;Red&#39;, }; declare function getStatus(): Light; const status = getStatus(); switch (status) { case Light.Green: console.log(&#39;render view 1&#39;); case Light.Yellow: console.log(&#39;render view 2 (with feature flag)&#39;); case Light.Red: console.log(&#39;render view 3&#39;); } Since I wanted to hit only one of the switch cases, specifically Light.">
+
+<meta property="og:title" content="Enum Cases Are Its Own Types in TypeScript" />
+<meta property="og:description" content="The other day I was adding a feature flag to a page within a React codebase. The relevant piece of code looked as follows:
+enum Light { string Green = &#39;Green&#39;, string Yellow = &#39;Yellow&#39;, string Red = &#39;Red&#39;, }; declare function getStatus(): Light; const status = getStatus(); switch (status) { case Light.Green: console.log(&#39;render view 1&#39;); case Light.Yellow: console.log(&#39;render view 2 (with feature flag)&#39;); case Light.Red: console.log(&#39;render view 3&#39;); } Since I wanted to hit only one of the switch cases, specifically Light." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://uzluisf.github.io/blog/enum-cases-own-types-in-ts/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2023-04-15T19:46:01-04:00" />
+<meta property="article:modified_time" content="2023-04-15T19:46:01-04:00" />
+
+
+<title>
+
+
+     Enum Cases Are Its Own Types in TypeScript 
+
+</title>
+<link rel="canonical" href="https://uzluisf.github.io/blog/enum-cases-own-types-in-ts/">
+
+
+
+
+
+
+
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+  
+
+
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Ubuntu+Mono:400,400i,700,700i|Raleway:500">
+
+
+
+    
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/reset.css?t=2023-04-16%2000%3a20%3a20.745553509%20%2b0000%20UTC%20m%3d%2b0.098436295">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/pygments.css?t=2023-04-16%2000%3a20%3a20.745553509%20%2b0000%20UTC%20m%3d%2b0.098436295">
+    <link rel="stylesheet" href="https://uzluisf.github.io/css/main.css?t=2023-04-16%2000%3a20%3a20.745553509%20%2b0000%20UTC%20m%3d%2b0.098436295">
+    
+        <link rel="stylesheet" href="https://uzluisf.github.io/css/override.css?t=2023-04-16%2000%3a20%3a20.745553509%20%2b0000%20UTC%20m%3d%2b0.098436295">
+    
+
+
+
+
+<link rel="shortcut icon"
+
+    href="https://uzluisf.github.io/img/leaf.ico"
+
+>
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body lang="en">
+
+<section class="header">
+    <div class="container">
+        <div class="content">
+            
+                
+                
+                
+                
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                        
+                    
+                
+                    
+                
+                
+                <a href="https://uzluisf.github.io/"><img class="avatar" src="https://uzluisf.github.io/img/profile.png" alt="avatar" srcset="https://uzluisf.github.io/img/profile.png 1x,https://uzluisf.github.io/img/profile-2x.png 2x,https://uzluisf.github.io/img/profile-3x.png 3x,https://uzluisf.github.io/img/profile-4x.png 4x"></a>
+            
+            <a href="https://uzluisf.github.io/"><div class="name">Luis Uceta</div></a>
+            
+            <nav>
+                <ul>
+                    
+                        
+                        <li class="nav-blog"><a href="https://uzluisf.github.io/blog/"><span>Blog</span></a></li>
+                    
+                        
+                        <li class="nav-about"><a href="https://uzluisf.github.io/about/"><span>About</span></a></li>
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<section class="icons">
+    <div class="container">
+        <div class="content">
+        
+            <a href="//github.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/github.svg" alt="github" /></a>
+        
+
+        
+
+        
+            <a href="//twitter.com/uzluisf" target="_blank" rel="noopener"><img class="icon" src="https://uzluisf.github.io/img/twitter.svg" alt="twitter" /></a>
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        
+        
+
+        
+        </div>
+    </div>
+</section>
+
+
+<section class="main post non-narrow zero-top-spacing">
+    <div class="container">
+        <div class="content">
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
+
+    Enum Cases Are Its Own Types in TypeScript
+
+</div>
+
+                    <div class="initials"><a href="https://uzluisf.github.io/"></a></div>
+                </div>
+                <div class="meta">
+                    
+                    <div class="date" title='Sat Apr 15 2023 19:46:01 -0400'>Apr 15, 2023</div>
+                    
+                    
+		    <div class="reading-time"><div class="middot"></div>One minute read</div>
+                    
+                </div>
+            </div>
+            <div class="markdown">
+                <p>The other day I was adding a feature flag to a page within a React codebase. The
+relevant piece of code looked as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-typescript" data-lang="typescript"><span class="line"><span class="cl"><span class="kr">enum</span> <span class="nx">Light</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">string</span> <span class="nx">Green</span> <span class="o">=</span> <span class="s1">&#39;Green&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">string</span> <span class="nx">Yellow</span> <span class="o">=</span> <span class="s1">&#39;Yellow&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">string</span> <span class="nx">Red</span> <span class="o">=</span> <span class="s1">&#39;Red&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">declare</span> <span class="kd">function</span> <span class="nx">getStatus</span><span class="p">()</span><span class="o">:</span> <span class="nx">Light</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">status</span> <span class="o">=</span> <span class="nx">getStatus</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">switch</span> <span class="p">(</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nx">Light.Green</span>:
+</span></span><span class="line"><span class="cl">    <span class="kt">console.log</span><span class="p">(</span><span class="s1">&#39;render view 1&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nx">Light.Yellow</span>:
+</span></span><span class="line"><span class="cl">    <span class="kt">console.log</span><span class="p">(</span><span class="s1">&#39;render view 2 (with feature flag)&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">case</span> <span class="nx">Light.Red</span>:
+</span></span><span class="line"><span class="cl">    <span class="kt">console.log</span><span class="p">(</span><span class="s1">&#39;render view 3&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Since I wanted to hit only one of the switch cases, specifically <code>Light.Yellow</code>,
+my first instinct was to set <code>status</code> to <code>Light.Yellow</code> and then I could test
+the feature flag on that page:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-typescript" data-lang="typescript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">status</span> <span class="o">=</span> <span class="nx">Light</span><span class="p">.</span><span class="nx">Yellow</span><span class="p">;</span>
+</span></span></code></pre></div><p>However doing this caused the following compilation error:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-typescript" data-lang="typescript"><span class="line"><span class="cl"><span class="nx">Type</span> <span class="s1">&#39;Light.Green&#39;</span> <span class="k">is</span> <span class="nx">not</span> <span class="nx">comparable</span> <span class="nx">to</span> <span class="kr">type</span> <span class="s1">&#39;Light.Yellow&#39;</span><span class="p">.</span> <span class="p">(</span><span class="mi">2678</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">Type</span> <span class="s1">&#39;Light.Red&#39;</span> <span class="k">is</span> <span class="nx">not</span> <span class="nx">comparable</span> <span class="nx">to</span> <span class="kr">type</span> <span class="s1">&#39;Light.Yellow&#39;</span><span class="p">.(</span><span class="mi">2678</span><span class="p">)</span>
+</span></span></code></pre></div><p>In TypeScript, each enumeration case is its own type and when I assigned
+<code>Light.Yellow</code> to <code>status</code>, TS had enough information to discern that <code>status</code>
+wouldn&rsquo;t be anything else other than <code>Light.Yellow</code>. However using type
+assertion with <code>as</code>, I could override TypeScript&rsquo;s type inference and get the
+behavior I wanted:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-typescript" data-lang="typescript"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">status</span> <span class="o">=</span> <span class="nx">Light</span><span class="p">.</span><span class="nx">Yellow</span> <span class="kr">as</span> <span class="nx">Light</span><span class="p">;</span>
+</span></span></code></pre></div><p>Now <code>status</code>&rsquo;s type was <code>Light</code> instead of <code>Light.Yellow</code>, and it could match
+any of the enum cases and hence no compilation error.</p>
+
+                <br>
+                
+                  <div class="tags">
+                    <strong>Tags:</strong>
+                  
+                    <a href="https://uzluisf.github.io/tags/enums">enums</a>
+                  
+                    <a href="https://uzluisf.github.io/tags/typescript">typescript</a>
+                  
+                  </div>
+                  <br />
+                
+                <p class="back-to-posts"><a href="https://uzluisf.github.io/blog">Back to posts</a></p>
+            </div>
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+
+
+
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    
+  
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+
+
+
+
+
+</body>
+</html>
+

@@ -2,10 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://uzluisf.github.io/blog/deploy-hugo-site-with-github-actions/</loc>
-    <lastmod>2023-04-08T19:15:39-04:00</lastmod>
+    <loc>https://uzluisf.github.io/blog/enum-cases-own-types-in-ts/</loc>
+    <lastmod>2023-04-15T19:46:01-04:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/tags/enums/</loc>
+    <lastmod>2023-04-15T19:46:01-04:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/tags/</loc>
+    <lastmod>2023-04-15T19:46:01-04:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/tags/typescript/</loc>
+    <lastmod>2023-04-15T19:46:01-04:00</lastmod>
   </url><url>
     <loc>https://uzluisf.github.io/</loc>
+    <lastmod>2023-04-15T19:46:01-04:00</lastmod>
+  </url><url>
+    <loc>https://uzluisf.github.io/blog/deploy-hugo-site-with-github-actions/</loc>
     <lastmod>2023-04-08T19:15:39-04:00</lastmod>
   </url><url>
     <loc>https://uzluisf.github.io/blog/buffers-nodejs-raku/</loc>
@@ -27,9 +39,6 @@
     <lastmod>2019-03-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://uzluisf.github.io/blog/syncing-your-tasks-with-fruux-and-tasks/</loc>
-    <lastmod>2019-03-30T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://uzluisf.github.io/tags/</loc>
     <lastmod>2019-03-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://uzluisf.github.io/tags/tasks/</loc>
